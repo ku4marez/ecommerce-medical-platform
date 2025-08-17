@@ -1,0 +1,80 @@
+# General
+HELP.md
+
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Gradle
+build/
+.gradle/
+!**/src/main/**/build/
+!**/src/test/**/build/
+.gradle-cache/
+
+# Logs and temp files
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*~$
+*.out
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE-specific configurations
+## IntelliJ IDEA ##
+.idea/
+*.iws
+*.iml
+*.ipr
+
+## Eclipse/STS ##
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+## NetBeans ##
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+## Visual Studio Code ##
+.vscode/
+
+# Compiled files and generated files
+*.class
+*.jar
+*.war
+*.ear
+*.generated
+generated/
+
+# Lombok config
+lombok.config
+
+# Test Reports
+/test-output/
+surefire-reports/
+
+# Additional
+node_modules/ # If using Node.js in the project
+.env           # For environment variables
+coverage/      # If using test coverage tools
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build

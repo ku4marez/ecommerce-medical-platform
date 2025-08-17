@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.4' apply false
+    id 'io.spring.dependency-management' version '1.1.6' apply false
+}
+
+ext.versions = [
+        springBoot : '3.5.4',
+        caffeine   : '3.1.8',
+        resilience : '2.2.0',                 // resilience4j for Boot 3
+        awsSdk     : '2.25.64',               // AWS SDK v2 (S3)
+        stripe     : '24.0.0',
+        commonLib  : '1.3.1'
+]
+
+allprojects {
+    group = 'com.github.ku4marez'
+    version = '0.1.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+        // GitHub Packages for your common-libraries
+        // Provide creds via GRADLE.properties or env (see below)
+        maven {
+            url = uri("https://maven.pkg.github.com/ku4marez/common-libraries")
+            credentials {
+                username = findProperty("gpr.user") ?: System.getenv("GPR_USER")
+                password = findProperty("gpr.token") ?: System.getenv("GPR_TOKEN")
+            }
+        }
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+    tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+    test { useJUnitPlatform() }
+
+    // If EVERY service uses the common lib, keep this here.
+    // If not, remove from here and add per-service instead.
+    dependencies {
+        implementation "com.github.ku4marez:common-libraries:${rootProject.versions.commonLib}"
+    }
+}
