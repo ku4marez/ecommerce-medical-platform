@@ -1,0 +1,27 @@
+plugins { id 'java-platform' }
+
+javaPlatform { allowDependencies() }
+
+dependencies {
+    // Bring in upstream BOMs (no versions elsewhere)
+    api(platform("org.springframework.boot:spring-boot-dependencies:3.5.4"))
+    api(platform("software.amazon.awssdk:bom:2.25.64"))
+
+    // Your pinned versions for libs not covered (or you want to override)
+    constraints {
+        api("io.github.resilience4j:resilience4j-spring-boot3:2.2.0")
+        api("io.github.resilience4j:resilience4j-ratelimiter:2.2.0")
+        api("io.github.resilience4j:resilience4j-retry:2.2.0")
+        api("io.github.resilience4j:resilience4j-circuitbreaker:2.2.0")
+        api("io.github.resilience4j:resilience4j-timelimiter:2.2.0")
+
+        api("com.github.ben-manes.caffeine:caffeine:3.1.8")
+        api("com.stripe:stripe-java:24.0.0")
+
+        // Spring Kafka is covered by spring-boot-dependencies, but you can override explicitly if needed:
+        api("org.springframework.kafka:spring-kafka:3.2.0")
+
+        // Test libs (optional pins)
+        api("org.springframework.kafka:spring-kafka-test:3.2.0")
+    }
+}

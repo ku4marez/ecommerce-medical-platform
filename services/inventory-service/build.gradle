@@ -1,18 +1,22 @@
-plugins { id 'org.springframework.boot'; id 'io.spring.dependency-management'; id 'java' }
+plugins {
+	id 'org.springframework.boot'
+	id 'io.spring.dependency-management'
+	id 'java'
+}
+
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-	implementation 'org.springframework.kafka:spring-kafka'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation libs.spring.boot.starter.web
+	implementation libs.spring.boot.starter.validation
+	implementation libs.spring.boot.starter.actuator
+	implementation libs.spring.boot.starter.data.mongodb
+	implementation libs.spring.kafka
+	implementation libs.spring.boot.starter.security
 
-	implementation 'org.springframework.boot:spring-boot-starter-cache'
-	implementation "com.github.ben-manes.caffeine:caffeine:${rootProject.versions.caffeine}"
-	// implementation 'org.springframework.boot:spring-boot-starter-data-redis' // optional
+	implementation libs.spring.boot.starter.cache
+	implementation libs.caffeine
 
-	implementation "io.github.resilience4j:resilience4j-spring-boot3:${rootProject.versions.resilience}"
+	implementation libs.resilience4j.spring.boot3
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	testImplementation libs.spring.boot.starter.test
+	testImplementation libs.spring.kafka.test
 }

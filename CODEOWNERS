@@ -1,0 +1,15 @@
+# Default owners
+*                                   @ku4marez
+
+# Services
+/services/catalog-service/          @ku4marez
+/services/inventory-service/        @ku4marez
+/services/order-service/            @ku4marez
+/services/payment-service/          @ku4marez
+
+# Frontend
+/clients/admin-ui/                  @ku4marez
+/clients/shop-ui/                   @ku4marez
+
+# Infra
+/infra/                             @ku4marez

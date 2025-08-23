@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  precommit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.x' }
+      - run: pip install pre-commit && pre-commit run --all-files
+
+  gradle-wrapper-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gradle/wrapper-validation-action@v3
+
+  backend-build:
+    runs-on: ubuntu-latest
+    needs: [precommit, gradle-wrapper-validation]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+      - uses: gradle/actions/setup-gradle@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            catalog:   { paths: ['services/catalog-service/**'] }
+            inventory: { paths: ['services/inventory-service/**'] }
+            order:     { paths: ['services/order-service/**'] }
+            payment:   { paths: ['services/payment-service/**'] }
+            platform:  { paths: ['platform/**','gradle/**','build.gradle','settings.gradle'] }
+
+      - name: Pick Gradle tasks
+        id: pick
+        shell: bash
+        run: |
+          tasks=()
+          [[ "${{ steps.filter.outputs.catalog }}"   == 'true' ]] && tasks+=(":services:catalog-service:build")
+          [[ "${{ steps.filter.outputs.inventory }}" == 'true' ]] && tasks+=(":services:inventory-service:build")
+          [[ "${{ steps.filter.outputs.order }}"     == 'true' ]] && tasks+=(":services:order-service:build")
+          [[ "${{ steps.filter.outputs.payment }}"   == 'true' ]] && tasks+=(":services:payment-service:build")
+
+          if [[ "${{ steps.filter.outputs.platform }}" == 'true' ]]; then
+            echo "tasks=build" >> "$GITHUB_OUTPUT"    # build everything
+            exit 0
+          fi
+
+          echo "tasks=${tasks[*]}" >> "$GITHUB_OUTPUT"
+
+      - name: Gradle build (selected modules)
+        if: steps.pick.outputs.tasks != ''
+        run: ./gradlew --no-daemon --stacktrace ${{ steps.pick.outputs.tasks }}
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    needs: precommit
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            admin_ui: { paths: ['clients/admin-ui/**'] }
+            shop_ui:  { paths: ['clients/shop-ui/**'] }
+
+      # Admin UI
+      - name: Setup Node for admin-ui
+        if: steps.filter.outputs.admin_ui == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: clients/admin-ui/package-lock.json
+      - name: Build admin-ui
+        if: steps.filter.outputs.admin_ui == 'true'
+        working-directory: clients/admin-ui
+        run: |
+          npm ci
+          npm run build
+
+      # Shop UI
+      - name: Setup Node for shop-ui
+        if: steps.filter.outputs.shop_ui == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: clients/shop-ui/package-lock.json
+      - name: Build shop-ui
+        if: steps.filter.outputs.shop_ui == 'true'
+        working-directory: clients/shop-ui
+        run: |
+          npm ci
+          npm run build
