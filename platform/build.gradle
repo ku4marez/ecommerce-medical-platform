@@ -23,5 +23,7 @@ dependencies {
 
         // Test libs (optional pins)
         api("org.springframework.kafka:spring-kafka-test:3.2.0")
+
+        api("org.projectlombok:lombok:1.18.34")
     }
 }

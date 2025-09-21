@@ -1,0 +1,13 @@
+plugins { id 'java-library' }
+
+dependencies {
+    api platform(project(':platform'))
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+    api 'org.springframework.data:spring-data-mongodb'
+
+    compileOnly 'jakarta.annotation:jakarta.annotation-api'
+    compileOnly 'org.mongodb:mongodb-driver-sync'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+}
+
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }

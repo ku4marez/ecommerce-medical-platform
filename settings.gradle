@@ -14,3 +14,8 @@ include(
 )
 
 project(":platform").buildFileName = "build.gradle"
+include 'starters'
+include 'starters:ecom-security-starter'
+include 'starters:ecom-kafka-starter'
+include 'starters:ecom-web-starter'
+include 'starters:ecom-mongo-starter'

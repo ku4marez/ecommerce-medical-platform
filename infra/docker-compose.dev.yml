@@ -1,0 +1,68 @@
+version: "3.8"
+
+services:
+  catalog-mongo:
+    image: mongo:6.0
+    container_name: ecom-catalog-mongo
+    restart: unless-stopped
+    environment:
+      JWT_SECRET: "A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4"
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password}
+    ports:
+      - "27021:27017"   # host -> container
+    volumes:
+      - ecom_catalog_mongo:/data/db
+    networks: [ecom-net]
+
+  inventory-mongo:
+    image: mongo:6.0
+    container_name: ecom-inventory-mongo
+    restart: unless-stopped
+    environment:
+      JWT_SECRET: "A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4"
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password}
+    ports:
+      - "27022:27017"
+    volumes:
+      - ecom_inventory_mongo:/data/db
+    networks: [ecom-net]
+
+  orders-mongo:
+    image: mongo:6.0
+    container_name: ecom-orders-mongo
+    restart: unless-stopped
+    environment:
+      JWT_SECRET: "A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4"
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password}
+    ports:
+      - "27023:27017"
+    volumes:
+      - ecom_orders_mongo:/data/db
+    networks: [ecom-net]
+
+  payments-mongo:
+    image: mongo:6.0
+    container_name: ecom-payments-mongo
+    restart: unless-stopped
+    environment:
+      JWT_SECRET: "A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4"
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password}
+    ports:
+      - "27024:27017"
+    volumes:
+      - ecom_payments_mongo:/data/db
+    networks: [ecom-net]
+
+volumes:
+  ecom_catalog_mongo:
+  ecom_inventory_mongo:
+  ecom_orders_mongo:
+  ecom_payments_mongo:
+
+networks:
+  ecom-net:
+    name: ecom-net

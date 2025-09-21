@@ -1,0 +1,8 @@
+plugins { id 'java-library' }
+
+dependencies {
+    api platform(project(':platform'))
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+    api 'org.springframework.kafka:spring-kafka'
+    compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
+}

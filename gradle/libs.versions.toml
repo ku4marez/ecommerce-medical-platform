@@ -19,3 +19,4 @@ aws-s3                                  = { module = "software.amazon.awssdk:s3"
 spring-boot-starter-test                = { module = "org.springframework.boot:spring-boot-starter-test" }
 spring-kafka-test                       = { module = "org.springframework.kafka:spring-kafka-test" }
 stripe                                  = { module = "com.stripe:stripe-java" }
+lombok                                  = { module = "org.projectlombok:lombok" }

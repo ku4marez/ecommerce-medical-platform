@@ -1,0 +1,15 @@
+plugins { id 'java-library' }
+
+dependencies {
+    api platform(project(':platform'))
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+
+    api 'org.springframework.security:spring-security-config'
+    api 'org.springframework.security:spring-security-oauth2-resource-server'
+    api 'org.springframework.security:spring-security-oauth2-jose'
+
+    api 'org.springframework.data:spring-data-commons'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+}
+
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }

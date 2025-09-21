@@ -1,0 +1,12 @@
+plugins { id 'java-library' }
+
+dependencies {
+    api platform(project(':platform'))
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+
+    compileOnly 'org.springframework:spring-web'
+    compileOnly 'org.springframework:spring-webmvc'
+
+    // for @ConfigurationProperties metadata
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+}

@@ -1,0 +1,32 @@
+ecom:
+  security:
+    enabled: true
+    jwt:
+      # dev choice (pick ONE of the three below)
+      hmac-secret: ${JWT_SECRET:dev-secret-base64-or-plain}  # or
+      # issuer-uri: https://auth.example.com/realms/shop     # preferred in real env
+      # jwk-set-uri: https://auth.example.com/realms/shop/protocol/openid-connect/certs
+  kafka:
+    enabled: true
+    auto-create-topics: true              # starter will create topics
+    product-topic: catalog.product.v1
+    order-topic: orders.order.v1
+    payment-topic: payments.payment.v1
+    stock-topic: inventory.stock.v1
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+
+  data:
+    mongodb:
+      uri: mongodb://root:password@localhost:27021/catalog?authSource=admin
+
+logging.level.org.springframework.kafka: INFO

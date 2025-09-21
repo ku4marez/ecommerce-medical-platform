@@ -31,6 +31,10 @@ configure(javaServiceModules) {
     dependencies {
         // import the internal BOM
         implementation(platform(project(":platform")))
+        implementation project(':starters:ecom-security-starter')
+        implementation project(':starters:ecom-kafka-starter')
+        implementation project(':starters:ecom-mongo-starter')
+        implementation project(':starters:ecom-web-starter')
         // shared lib (remove if not all services use it)
         implementation("com.github.ku4marez:common-libraries:1.3.4") {
             exclude group: "org.springframework.boot", module: "spring-boot-starter-data-jpa"

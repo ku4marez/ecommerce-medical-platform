@@ -24,4 +24,9 @@ dependencies {
 
 	testImplementation libs.spring.boot.starter.test
 	testImplementation libs.spring.kafka.test
+
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+    testCompileOnly libs.lombok
+    testAnnotationProcessor libs.lombok
 }
