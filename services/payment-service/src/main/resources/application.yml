@@ -11,17 +11,37 @@ ecom:
     payment-topic: payments.payment.v1
     stock-topic: inventory.stock.v1
 
+# Stripe config (test mode)
+stripe:
+  api-key: ${STRIPE_API_KEY:}                 # sk_test_xxx
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET:}   # from stripe cli forward
+
 spring:
+  application.name: payment-service
   kafka:
-    bootstrap-servers: localhost:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
     consumer:
+      group-id: payment-service
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
-
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
   data:
     mongodb:
-      uri: mongodb://root:password@localhost:27024/payments?authSource=admin
+      uri: ${MONGO_URI:mongodb://root:password@localhost:27024/payments?authSource=admin}
+
+server:
+  port: ${SERVER_PORT:8084}
+
+management:
+  endpoints.web.exposure.include: health,info,metrics,prometheus
+  endpoint.health.probes.enabled: true
+  metrics.tags.application: ${spring.application.name}
+
+logging:
+  level:
+    org.springframework.kafka: INFO
+    org.springframework.data.mongodb: INFO
+    com.github.ku4marez: DEBUG

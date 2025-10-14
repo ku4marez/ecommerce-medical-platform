@@ -24,6 +24,12 @@ dependencies {
         // Test libs (optional pins)
         api("org.springframework.kafka:spring-kafka-test:3.2.0")
 
-        api("org.projectlombok:lombok:1.18.34")
+        api("org.mapstruct:mapstruct:1.5.5.Final")
+        api("org.mapstruct:mapstruct-processor:1.5.5.Final")
+        api("org.projectlombok:lombok:1.18.32")
+        api("org.projectlombok:lombok-mapstruct-binding:0.2.0")
+
+        api("io.micrometer:micrometer-registry-prometheus")
+
     }
 }

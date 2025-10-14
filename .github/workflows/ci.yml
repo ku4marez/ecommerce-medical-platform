@@ -11,7 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: { python-version: '3.x' }
+        with:
+          python-version: '3.x'
       - run: pip install pre-commit && pre-commit run --all-files
 
   gradle-wrapper-validation:
@@ -25,11 +26,16 @@ jobs:
     needs: [precommit, gradle-wrapper-validation]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
           cache: gradle
+
       - uses: gradle/actions/setup-gradle@v4
 
       - uses: dorny/paths-filter@v3
@@ -40,6 +46,7 @@ jobs:
             inventory: { paths: ['services/inventory-service/**'] }
             order:     { paths: ['services/order-service/**'] }
             payment:   { paths: ['services/payment-service/**'] }
+            starters:  { paths: ['starters/**'] }
             platform:  { paths: ['platform/**','gradle/**','build.gradle','settings.gradle'] }
 
       - name: Pick Gradle tasks
@@ -52,15 +59,24 @@ jobs:
           [[ "${{ steps.filter.outputs.order }}"     == 'true' ]] && tasks+=(":services:order-service:build")
           [[ "${{ steps.filter.outputs.payment }}"   == 'true' ]] && tasks+=(":services:payment-service:build")
 
-          if [[ "${{ steps.filter.outputs.platform }}" == 'true' ]]; then
-            echo "tasks=build" >> "$GITHUB_OUTPUT"    # build everything
+          # if platform or starters changed, build everything
+          if [[ "${{ steps.filter.outputs.platform }}" == 'true' || "${{ steps.filter.outputs.starters }}" == 'true' ]]; then
+            echo "tasks=build" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # if nothing matched, build everything (docs/infra-only PRs still prove the build)
+          if [[ ${#tasks[@]} -eq 0 ]]; then
+            echo "tasks=build" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           echo "tasks=${tasks[*]}" >> "$GITHUB_OUTPUT"
 
+      - name: Show selected tasks
+        run: echo "Gradle tasks: ${{ steps.pick.outputs.tasks }}"
+
       - name: Gradle build (selected modules)
-        if: steps.pick.outputs.tasks != ''
         run: ./gradlew --no-daemon --stacktrace ${{ steps.pick.outputs.tasks }}
 
   frontend-build:
@@ -84,6 +100,7 @@ jobs:
           node-version: '20'
           cache: npm
           cache-dependency-path: clients/admin-ui/package-lock.json
+
       - name: Build admin-ui
         if: steps.filter.outputs.admin_ui == 'true'
         working-directory: clients/admin-ui
@@ -99,6 +116,7 @@ jobs:
           node-version: '20'
           cache: npm
           cache-dependency-path: clients/shop-ui/package-lock.json
+
       - name: Build shop-ui
         if: steps.filter.outputs.shop_ui == 'true'
         working-directory: clients/shop-ui

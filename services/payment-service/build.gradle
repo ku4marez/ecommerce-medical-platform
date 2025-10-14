@@ -20,8 +20,19 @@ dependencies {
 	testImplementation libs.spring.boot.starter.test
 	testImplementation libs.spring.kafka.test
 
+    // Lombok
     compileOnly libs.lombok
     annotationProcessor libs.lombok
+
+    // MapStruct
+    implementation libs.mapstruct
+    annotationProcessor libs.mapstruct.processor
+    // helps Lombok + MapStruct work nicely together
+    annotationProcessor libs.lombok.mapstruct.binding
+
     testCompileOnly libs.lombok
     testAnnotationProcessor libs.lombok
+    testAnnotationProcessor libs.mapstruct.processor
+
+    implementation libs.prometheus
 }

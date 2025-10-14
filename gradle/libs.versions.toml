@@ -20,3 +20,7 @@ spring-boot-starter-test                = { module = "org.springframework.boot:s
 spring-kafka-test                       = { module = "org.springframework.kafka:spring-kafka-test" }
 stripe                                  = { module = "com.stripe:stripe-java" }
 lombok                                  = { module = "org.projectlombok:lombok" }
+mapstruct                               = { module = "org.mapstruct:mapstruct" }
+mapstruct-processor                     = { module = "org.mapstruct:mapstruct-processor" }
+lombok-mapstruct-binding                = { module = "org.projectlombok:lombok-mapstruct-binding" }
+prometheus                              = { module = "io.micrometer:micrometer-registry-prometheus" }

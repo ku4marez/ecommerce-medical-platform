@@ -10,10 +10,20 @@ ecom:
     order-topic: orders.order.v1
     payment-topic: payments.payment.v1
     stock-topic: inventory.stock.v1
+  # Optional CORS via your web-starter (safe to leave)
+  web:
+    cors:
+      enabled: true
+      allowed-origins: [ "http://localhost:3000" ]
+      allowed-methods: [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ]
+      allowed-headers: [ "*" ]
+      allow-credentials: true
 
 spring:
+  application:
+    name: inventory-service
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -21,7 +31,28 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
-
   data:
     mongodb:
-      uri: mongodb://root:password@localhost:27023/orders?authSource=admin
+      uri: ${MONGO_URI:mongodb://root:password@localhost:27023/orders?authSource=admin}
+
+server:
+  port: ${SERVER_PORT:8083}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    org.springframework.kafka: INFO
+    org.springframework.data.mongodb: INFO
+    com.github.ku4marez: DEBUG

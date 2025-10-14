@@ -2,21 +2,40 @@ ecom:
   security:
     enabled: true
     jwt:
-      # dev choice (pick ONE of the three below)
-      hmac-secret: ${JWT_SECRET:dev-secret-base64-or-plain}  # or
-      # issuer-uri: https://auth.example.com/realms/shop     # preferred in real env
-      # jwk-set-uri: https://auth.example.com/realms/shop/protocol/openid-connect/certs
+      # Pick ONE (issuer-uri is best in real env; HMAC is fine for dev)
+      hmac-secret: ${JWT_SECRET:dev-secret}
+      # issuer-uri: ${JWT_ISSUER_URI:}
+      # jwk-set-uri: ${JWT_JWKS_URI:}
+      roles-claim: roles
+
   kafka:
     enabled: true
-    auto-create-topics: true              # starter will create topics
+    auto-create-topics: true
     product-topic: catalog.product.v1
     order-topic: orders.order.v1
     payment-topic: payments.payment.v1
     stock-topic: inventory.stock.v1
 
+  # Optional CORS via your web-starter (safe to leave)
+  web:
+    cors:
+      enabled: true
+      allowed-origins: [ "http://localhost:3000" ]
+      allowed-methods: [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ]
+      allowed-headers: [ "*" ]
+      allow-credentials: true
+
+  # S3 / MinIO config used by the presign service
+  s3:
+    bucket: ${S3_BUCKET:local-bucket}
+    endpoint: ${S3_ENDPOINT:}          # e.g. http://localhost:9000 for MinIO; leave empty for AWS
+    region: ${S3_REGION:us-east-1}
+    path-style-access: ${S3_PATH_STYLE:true}   # true for MinIO; AWS can be false
+    presign-ttl-seconds: 300
+
 spring:
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -24,9 +43,29 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
+      group-id: catalog-service
 
   data:
     mongodb:
-      uri: mongodb://root:password@localhost:27021/catalog?authSource=admin
+      uri: ${MONGO_URI:mongodb://root:password@localhost:27021/catalog?authSource=admin}
 
-logging.level.org.springframework.kafka: INFO
+server:
+  port: ${SERVER_PORT:8081}
+
+logging:
+  level:
+    org.springframework.kafka: INFO
+    org.springframework.data.mongodb: INFO
+    com.github.ku4marez: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes.enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name:catalog-service}
