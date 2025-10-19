@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.index.Index;
 
 import java.util.List;
+
 @Configuration
 public class InventoryMongoSchema implements MongoSchemaProvider {
 

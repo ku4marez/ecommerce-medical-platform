@@ -8,8 +8,17 @@ import java.util.List;
 import java.util.Map;
 
 public record ProductResponse(
-    String id, String sku, String slug, String name, String description,
-    ProductStatus status, BigDecimal price, String currency, String categoryId,
-    Map<String, Object> attributes, List<String> imageIds,
-    Instant creationDate, Instant updatedDate
+    String id,
+    String sku,
+    String slug,
+    String name,
+    String description,
+    ProductStatus status,
+    BigDecimal price,
+    String currency,
+    String categoryId,
+    Map<String, Object> attributes,
+    List<String> imageIds,
+    Instant creationDate,
+    Instant updatedDate
 ) {}

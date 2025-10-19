@@ -1,7 +1,7 @@
 package com.github.ku4marez.catalog.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -18,8 +18,10 @@ import java.time.Instant;
 public class S3PresignService {
     private final S3Client s3;
     private final S3Presigner presigner;
-    @Value("${ecom.s3.bucket}") private String bucket;
-    @Value("${ecom.s3.presign-ttl-seconds:300}") private long ttl;
+    @Value("${ecom.s3.bucket}")
+    private String bucket;
+    @Value("${ecom.s3.presign-ttl-seconds:300}")
+    private long ttl;
 
     public record Link(String url, Instant expiresAt) {}
 

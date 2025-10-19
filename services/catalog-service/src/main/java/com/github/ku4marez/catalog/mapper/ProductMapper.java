@@ -1,6 +1,7 @@
 package com.github.ku4marez.catalog.mapper;
 
 import com.github.ku4marez.catalog.dto.ProductCreateRequest;
+import com.github.ku4marez.catalog.dto.ProductOption;
 import com.github.ku4marez.catalog.dto.ProductResponse;
 import com.github.ku4marez.catalog.dto.ProductUpdateRequest;
 import com.github.ku4marez.catalog.entity.ProductEntity;
@@ -14,7 +15,9 @@ import org.mapstruct.*;
 public interface ProductMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "imageIds", expression = "java(new java.util.ArrayList<>())")
+    @Mapping(target = "imageIds", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "updatedDate", ignore = true)
     ProductEntity toNewEntity(ProductCreateRequest req);
 
     // Partial update onto existing entity
@@ -22,4 +25,9 @@ public interface ProductMapper {
     void updateEntity(@MappingTarget ProductEntity entity, ProductUpdateRequest req);
 
     ProductResponse toResponse(ProductEntity entity);
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "sku", source = "sku")
+    ProductOption toOption(ProductEntity e);
 }

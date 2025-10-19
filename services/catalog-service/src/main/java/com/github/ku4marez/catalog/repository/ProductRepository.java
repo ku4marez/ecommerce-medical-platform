@@ -16,4 +16,7 @@ public interface ProductRepository extends MongoRepository<ProductEntity, String
 
     @Query("{ $text: { $search: ?0 } }")
     Page<ProductEntity> textSearch(String query, Pageable pageable);
+
+    @Query(value = "{}", fields = "{ 'id': 1, 'name': 1, 'sku': 1 }")
+    Page<ProductEntity> findOptions(Pageable pageable);
 }

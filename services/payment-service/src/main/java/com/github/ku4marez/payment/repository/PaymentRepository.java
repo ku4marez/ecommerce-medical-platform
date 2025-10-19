@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PaymentRepository extends MongoRepository<PaymentEntity, String> {
+public interface PaymentRepository extends MongoRepository<PaymentEntity, String>, PaymentRepositoryCustom {
     Optional<PaymentEntity> findByOrderId(String orderId);
     Optional<PaymentEntity> findByProviderAndProviderRef(PaymentProvider provider, String providerRef);
+    Optional<PaymentEntity> findByProviderRef(String providerRef);
 }

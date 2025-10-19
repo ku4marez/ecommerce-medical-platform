@@ -1,6 +1,7 @@
 package com.github.ku4marez.catalog.controller;
 
 import com.github.ku4marez.catalog.dto.ProductCreateRequest;
+import com.github.ku4marez.catalog.dto.ProductOption;
 import com.github.ku4marez.catalog.dto.ProductResponse;
 import com.github.ku4marez.catalog.dto.ProductUpdateRequest;
 import com.github.ku4marez.catalog.mapper.ProductMapper;
@@ -18,30 +19,46 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
-    private final ProductService service;
+    private final ProductService svc;
     private final ProductMapper mapper;
 
     @GetMapping("/{id}")
-    public ProductResponse get(@PathVariable String id) {
-        return mapper.toResponse(service.getByIdCached(id));
+    public ProductResponse getById(@PathVariable String id) {
+        return mapper.toResponse(svc.getByIdCached(id));
+    }
+
+    @GetMapping("/slug/{slug}")
+    public ProductResponse getBySlug(@PathVariable String slug) {
+        return mapper.toResponse(svc.getBySlugCached(slug));
     }
 
     @GetMapping
-    public Page<ProductResponse> list(
-        @RequestParam(required = false) String q,
-        @PageableDefault(size = 20, sort = "creationDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        var page = (q == null || q.isBlank()) ? service.list(pageable) : service.search(q, pageable);
-        return page.map(mapper::toResponse);
+    public Page<ProductResponse> list(@RequestParam(required = false) String q,
+                                      @PageableDefault(size = 20, sort = "creationDate", direction = Sort.Direction.DESC)
+                                      Pageable pageable) {
+        return svc.search(q, pageable);
+    }
+
+    @GetMapping("/options")
+    public Page<ProductOption> options(@PageableDefault(size = 50, sort = "name") Pageable pageable) {
+        return svc.listOptions(pageable);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductResponse create(@Valid @RequestBody ProductCreateRequest req) {
-        return mapper.toResponse(service.create(req));
+    public ProductResponse create(@Valid @RequestBody ProductCreateRequest r) {
+        return mapper.toResponse(svc.create(r));
     }
 
     @PutMapping("/{id}")
-    public ProductResponse update(@PathVariable String id, @Valid @RequestBody ProductUpdateRequest req) {
-        return mapper.toResponse(service.update(id, req));
+    public ProductResponse update(@PathVariable String id, @Valid @RequestBody ProductUpdateRequest r) {
+        return mapper.toResponse(svc.update(id, r));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable String id) {
+        svc.delete(id);
     }
 }
+

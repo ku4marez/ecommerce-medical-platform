@@ -1,15 +1,17 @@
 package com.github.ku4marez.ecom.starters.web;
 
+import com.github.ku4marez.ecom.starters.web.exception.ApiErrorHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.cors.CorsConfigurationSource;
-
 
 @AutoConfiguration
 @EnableConfigurationProperties(WebProps.class)
 @ConditionalOnProperty(prefix="ecom.web.cors", name="enabled", havingValue="true", matchIfMissing = true)
+@Import(ApiErrorHandler.class)
 public class WebAutoConfiguration {
 
     @Bean @ConditionalOnMissingBean

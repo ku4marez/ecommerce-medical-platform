@@ -1,17 +1,20 @@
 package com.github.ku4marez.payment.service;
 
-import com.github.ku4marez.payment.dto.CreatePaymentRequest;
-import com.github.ku4marez.payment.dto.PaymentResponse;
-import com.github.ku4marez.payment.dto.RefundRequest;
-import com.github.ku4marez.payment.dto.RefundResponse;
+import com.github.ku4marez.payment.configuration.PaymentEventsPublisher;
+import com.github.ku4marez.payment.dto.*;
 import com.github.ku4marez.payment.entity.*;
 import com.github.ku4marez.payment.mapper.PaymentMapper;
 import com.github.ku4marez.payment.repository.PaymentRefundRepository;
 import com.github.ku4marez.payment.repository.PaymentRepository;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,13 +23,27 @@ public class PaymentService {
     private final PaymentRepository payments;
     private final PaymentRefundRepository refunds;
     private final PaymentMapper mapper;
-    // private final PaymentEventsPublisher publisher; // wire later with Kafka
+    private final PaymentEventsPublisher publisher;
 
+    // ---------- Queries ----------
     public PaymentResponse get(String id) {
         return mapper.toResponse(payments.findById(id).orElseThrow());
     }
 
-    /** Create pending payment link/intent for the order (idempotent by orderId). */
+    public Page<PaymentResponse> list(String orderId, PaymentStatus status,
+                                      PaymentProvider provider, Instant from, Instant to,
+                                      Pageable pageable) {
+        return payments.search(orderId, status, provider, from, to, pageable)
+            .map(mapper::toResponse);
+    }
+
+    public List<PaymentOptionResponse> listOptions(String search, PaymentStatus status, int limit) {
+        return payments.findOptions(search, status, limit).stream()
+            .map(e -> new PaymentOptionResponse(e.getId(), e.getOrderId(), e.getStatus(), e.getProvider()))
+            .toList();
+    }
+
+    // ---------- Commands ----------
     @Transactional
     public PaymentResponse create(CreatePaymentRequest req) {
         var existing = payments.findByOrderId(req.orderId());
@@ -37,25 +54,31 @@ public class PaymentService {
         p.setProvider(PaymentProvider.STRIPE);
         p.setStatus(PaymentStatus.PENDING);
 
-        // TODO (Stripe real): create PaymentIntent or Checkout Session with stripe-java
-        // and set:
-        //   p.setProviderRef(intentOrSessionId);
-        //   p.setCheckoutUrl(checkoutUrlIfSession);
-
+        // (Later) integrate Stripe and fill providerRef, checkoutUrl
         var saved = payments.save(p);
         return mapper.toResponse(saved);
     }
 
-    /** Provider webhook handler (set SUCCEEDED/FAILED). */
+    /** Webhook handler for Stripe (or another provider). */
     @Transactional
     public void onProviderEvent(String payload, @Nullable String signatureHeader) {
-        // TODO (Stripe real): verify signature with webhook secret, parse event
-        // - locate PaymentEntity by providerRef
-        // - set status SUCCEEDED/FAILED
-        // - save + publish payment.succeeded/payment.failed (later)
+        // Example: pseudo handler for success/failure parsed from payload
+        var providerRef = parseProviderRef(payload);
+        var status = parseStatus(payload);
+
+        var payment = payments.findByProviderRef(providerRef).orElseThrow();
+
+        payment.setStatus(status);
+        payments.save(payment);
+
+        // Publish event to Orders service
+        if (status == PaymentStatus.SUCCEEDED) {
+            publisher.publishPaymentSucceeded(payment);
+        } else if (status == PaymentStatus.FAILED) {
+            publisher.publishPaymentFailed(payment);
+        }
     }
 
-    /** Manual refund helper. */
     @Transactional
     public RefundResponse refund(RefundRequest req) {
         var payment = payments.findById(req.paymentId()).orElseThrow();
@@ -65,11 +88,17 @@ public class PaymentService {
         r.setProvider(payment.getProvider());
         r.setStatus(RefundStatus.PENDING);
         r.setAmount(req.amount());
-        r.setCurrency("usd"); // or from payment/order; adjust as needed
+        r.setCurrency("usd");
         r.setReason(req.reason());
 
-        // TODO (Stripe real): call Refund.create -> set providerRefundRef and final status
         var saved = refunds.save(r);
+
+        publisher.publishPaymentRefunded(payment, saved);
         return mapper.toResponse(saved);
     }
+
+    // Mock helpers for Stripe placeholders
+    private String parseProviderRef(String payload) { return "mock_ref"; }
+    private PaymentStatus parseStatus(String payload) { return PaymentStatus.SUCCEEDED; }
 }
+

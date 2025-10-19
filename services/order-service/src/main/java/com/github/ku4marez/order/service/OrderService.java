@@ -1,7 +1,9 @@
 package com.github.ku4marez.order.service;
 
 import com.github.ku4marez.order.configuration.CacheConfiguration;
+import com.github.ku4marez.order.configuration.OrderEventsPublisher;
 import com.github.ku4marez.order.dto.OrderCreateRequest;
+import com.github.ku4marez.order.dto.OrderOptionResponse;
 import com.github.ku4marez.order.dto.OrderResponse;
 import com.github.ku4marez.order.entity.OrderEntity;
 import com.github.ku4marez.order.entity.OrderStatus;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -28,17 +32,7 @@ public class OrderService {
 
     private final OrderRepository repo;
     private final OrderMapper mapper;
-
-    // ---------- Queries ----------
-    @Cacheable(key = "#id")
-    public OrderResponse get(String id) {
-        var e = repo.findById(id).orElseThrow(() -> new NoSuchElementException("Order not found"));
-        return mapper.toResponse(e);
-    }
-
-    public Page<OrderResponse> listByCustomer(String customerId, Pageable pageable) {
-        return repo.findByCustomerIdOrderByCreationDateDesc(customerId, pageable).map(mapper::toResponse);
-    }
+    private final OrderEventsPublisher publisher;
 
     // ---------- Commands ----------
     @Transactional
@@ -46,13 +40,11 @@ public class OrderService {
         @CacheEvict(key = "#result.id", condition = "#result != null")
     })
     public OrderResponse create(String idempotencyKey, OrderCreateRequest req) {
-        // 1) idempotency
         if (idempotencyKey != null && !idempotencyKey.isBlank()) {
             Optional<OrderEntity> existing = repo.findByIdempotencyKey(idempotencyKey);
             if (existing.isPresent()) return mapper.toResponse(existing.get());
         }
 
-        // 2) build + compute totals
         var e = mapper.toNewEntity(req);
         e.setIdempotencyKey(idempotencyKey);
 
@@ -61,14 +53,10 @@ public class OrderService {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         e.setTotalAmount(total);
 
-        // status NEW for now (we'll advance when Kafka/payment is wired)
         e.setStatus(OrderStatus.NEW);
 
-        // 3) save
         var saved = repo.save(e);
-
-        // 4) (later) emit order.created via Kafka publisher
-
+        publisher.publishOrderCreated(saved);
         return mapper.toResponse(saved);
     }
 
@@ -77,6 +65,37 @@ public class OrderService {
     public OrderResponse updateStatus(String id, OrderStatus status) {
         var e = repo.findById(id).orElseThrow(() -> new NoSuchElementException("Order not found"));
         e.setStatus(status);
-        return mapper.toResponse(repo.save(e));
+        var saved = repo.save(e);
+
+        if (status == OrderStatus.CANCELLED) publisher.publishOrderCancelled(saved, "manual or saga");
+        else if (status == OrderStatus.CONFIRMED) publisher.publishOrderConfirmed(saved);
+
+        return mapper.toResponse(saved);
     }
+
+    // ---------- Queries ----------
+    @Cacheable(key = "#id")
+    public OrderResponse get(String id) {
+        var e = repo.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Order not found"));
+        return mapper.toResponse(e);
+    }
+
+    public Page<OrderResponse> listByCustomer(String customerId, Pageable pageable) {
+        return repo.findByCustomerIdOrderByCreationDateDesc(customerId, pageable)
+            .map(mapper::toResponse);
+    }
+
+    public Page<OrderResponse> listAll(String customerId, OrderStatus status,
+                                       Instant from, Instant to, Pageable pageable) {
+        return repo.search(customerId, status, from, to, pageable)
+            .map(mapper::toResponse);
+    }
+
+    public List<OrderOptionResponse> listOptions(String search, OrderStatus status, int limit) {
+        return repo.findOptions(search, status, limit).stream()
+            .map(e -> new OrderOptionResponse(e.getId(), e.getCustomerId(), e.getStatus(), e.getTotalAmount()))
+            .toList();
+    }
+
 }
