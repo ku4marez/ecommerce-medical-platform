@@ -7,6 +7,7 @@ import com.github.ku4marez.catalog.dto.ProductOption;
 import com.github.ku4marez.catalog.dto.ProductResponse;
 import com.github.ku4marez.catalog.dto.ProductUpdateRequest;
 import com.github.ku4marez.catalog.entity.ProductEntity;
+import com.github.ku4marez.catalog.exception.ProductNotFoundException;
 import com.github.ku4marez.catalog.mapper.ProductMapper;
 import com.github.ku4marez.catalog.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -31,12 +31,12 @@ public class ProductService {
 
     @Cacheable(cacheNames = CacheConfiguration.PRODUCT_BY_ID, key = "#id")
     public ProductEntity getByIdCached(String id) {
-        return repo.findById(id).orElseThrow(() -> new NoSuchElementException("Product not found"));
+        return repo.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     @Cacheable(cacheNames = CacheConfiguration.PRODUCT_BY_SLUG, key = "#slug")
     public ProductEntity getBySlugCached(String slug) {
-        return repo.findBySlug(slug).orElseThrow(() -> new NoSuchElementException("Product not found"));
+        return repo.findBySlug(slug).orElseThrow(() -> new ProductNotFoundException(slug));
     }
 
     public Page<ProductResponse> list(Pageable pageable) {
@@ -75,7 +75,7 @@ public class ProductService {
         @CachePut(cacheNames = CacheConfiguration.PRODUCT_BY_SLUG, key = "#result.slug")
     })
     public ProductEntity update(String id, ProductUpdateRequest r) {
-        var e = repo.findById(id).orElseThrow(() -> new NoSuchElementException("Product not found"));
+        var e = repo.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
         var oldSlug = e.getSlug();
         mapper.updateEntity(e, r);
         var saved = repo.save(e);

@@ -1,6 +1,6 @@
 package com.github.ku4marez.catalog.repository;
 
-import com.github.ku4marez.catalog.service.ProductStatsEntity;
+import com.github.ku4marez.catalog.entity.ProductStatsEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;

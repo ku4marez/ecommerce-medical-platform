@@ -5,6 +5,7 @@ import com.github.ku4marez.inventory.dto.*;
 import com.github.ku4marez.inventory.entity.ReservationEntity;
 import com.github.ku4marez.inventory.entity.ReservationStatus;
 import com.github.ku4marez.inventory.entity.StockItemEntity;
+import com.github.ku4marez.inventory.exception.ReservationNotFoundException;
 import com.github.ku4marez.inventory.mapper.ReservationMapper;
 import com.github.ku4marez.inventory.mapper.StockItemMapper;
 import com.github.ku4marez.inventory.repository.ReservationRepository;
@@ -56,7 +57,7 @@ public class InventoryService {
 
     public ReservationResponse getReservation(String productId, String orderId) {
         var r = reservations.findByProductIdAndOrderId(productId, orderId)
-            .orElseThrow(() -> new NoSuchElementException("Reservation not found"));
+            .orElseThrow(() -> new ReservationNotFoundException(productId, orderId));
         return reservationMapper.toResponse(r);
     }
 

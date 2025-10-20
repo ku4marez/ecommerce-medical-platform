@@ -1,67 +1,97 @@
 version: "3.8"
 
 services:
+  # --- MongoDBs ---
   catalog-mongo:
     image: mongo:6.0
     container_name: ecom-catalog-mongo
-    restart: unless-stopped
     environment:
-      JWT_SECRET: "A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4"
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password}
-    ports:
-      - "27021:27017"   # host -> container
-    volumes:
-      - ecom_catalog_mongo:/data/db
-    networks: [ecom-net]
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports: [ "27021:27017" ]
+    volumes: [ "ecom_catalog_mongo:/data/db" ]
+    networks: [ ecom-net ]
 
   inventory-mongo:
     image: mongo:6.0
     container_name: ecom-inventory-mongo
-    restart: unless-stopped
     environment:
-      JWT_SECRET: "A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4"
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password}
-    ports:
-      - "27022:27017"
-    volumes:
-      - ecom_inventory_mongo:/data/db
-    networks: [ecom-net]
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports: [ "27022:27017" ]
+    volumes: [ "ecom_inventory_mongo:/data/db" ]
+    networks: [ ecom-net ]
 
   orders-mongo:
     image: mongo:6.0
     container_name: ecom-orders-mongo
-    restart: unless-stopped
     environment:
-      JWT_SECRET: "A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4"
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password}
-    ports:
-      - "27023:27017"
-    volumes:
-      - ecom_orders_mongo:/data/db
-    networks: [ecom-net]
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports: [ "27023:27017" ]
+    volumes: [ "ecom_orders_mongo:/data/db" ]
+    networks: [ ecom-net ]
 
   payments-mongo:
     image: mongo:6.0
     container_name: ecom-payments-mongo
-    restart: unless-stopped
     environment:
-      JWT_SECRET: "A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4"
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password}
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports: [ "27024:27017" ]
+    volumes: [ "ecom_payments_mongo:/data/db" ]
+    networks: [ ecom-net ]
+
+  # --- Kafka + Zookeeper ---
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: ecom-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports: [ "2181:2181" ]
+    networks: [ ecom-net ]
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: ecom-kafka
+    depends_on: [ zookeeper ]
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports: [ "9092:9092" ]
+    networks: [ ecom-net ]
+
+  # --- MinIO (S3 replacement) ---
+  minio:
+    image: minio/minio:latest
+    container_name: ecom-minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
     ports:
-      - "27024:27017"
+      - "9000:9000"
+      - "9001:9001"
     volumes:
-      - ecom_payments_mongo:/data/db
-    networks: [ecom-net]
+      - ecom_minio_data:/data
+    networks: [ ecom-net ]
+
+  stripe-mock:
+    image: stripe/stripe-mock:latest
+    container_name: ecom-stripe-mock
+    ports: [ "12111:12111" ]
+    networks: [ ecom-net ]
 
 volumes:
   ecom_catalog_mongo:
   ecom_inventory_mongo:
   ecom_orders_mongo:
   ecom_payments_mongo:
+  ecom_minio_data:
 
 networks:
   ecom-net:

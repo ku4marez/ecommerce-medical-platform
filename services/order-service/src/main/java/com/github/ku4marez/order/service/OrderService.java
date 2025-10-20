@@ -7,6 +7,7 @@ import com.github.ku4marez.order.dto.OrderOptionResponse;
 import com.github.ku4marez.order.dto.OrderResponse;
 import com.github.ku4marez.order.entity.OrderEntity;
 import com.github.ku4marez.order.entity.OrderStatus;
+import com.github.ku4marez.order.exception.OrderNotFoundException;
 import com.github.ku4marez.order.mapper.OrderMapper;
 import com.github.ku4marez.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -63,7 +63,7 @@ public class OrderService {
     @Transactional
     @CacheEvict(key = "#id")
     public OrderResponse updateStatus(String id, OrderStatus status) {
-        var e = repo.findById(id).orElseThrow(() -> new NoSuchElementException("Order not found"));
+        var e = repo.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
         e.setStatus(status);
         var saved = repo.save(e);
 
@@ -77,7 +77,7 @@ public class OrderService {
     @Cacheable(key = "#id")
     public OrderResponse get(String id) {
         var e = repo.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Order not found"));
+            .orElseThrow(() -> new OrderNotFoundException(id));
         return mapper.toResponse(e);
     }
 

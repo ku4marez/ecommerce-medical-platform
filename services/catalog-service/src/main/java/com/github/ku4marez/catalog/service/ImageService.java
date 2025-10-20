@@ -4,12 +4,11 @@ import com.github.ku4marez.catalog.dto.ImageViewUrl;
 import com.github.ku4marez.catalog.dto.PresignRequest;
 import com.github.ku4marez.catalog.dto.PresignResponse;
 import com.github.ku4marez.catalog.entity.ProductImageEntity;
+import com.github.ku4marez.catalog.exception.ProductNotFoundException;
 import com.github.ku4marez.catalog.repository.ProductImageRepository;
 import com.github.ku4marez.catalog.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +18,7 @@ public class ImageService {
     private final ProductRepository products;
 
     public PresignResponse presignUpload(String productId, PresignRequest req) {
-        products.findById(productId).orElseThrow(() -> new NoSuchElementException("Product not found"));
+        products.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
         String objectKey = "products/%s/%s".formatted(productId, req.filename());
         var presigned = s3.presignPut(objectKey, req.mimeType());
 

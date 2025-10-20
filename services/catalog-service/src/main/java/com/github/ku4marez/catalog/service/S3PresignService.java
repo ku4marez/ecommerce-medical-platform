@@ -3,7 +3,6 @@ package com.github.ku4marez.catalog.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -16,7 +15,7 @@ import java.time.Instant;
 @Service
 @RequiredArgsConstructor
 public class S3PresignService {
-    private final S3Client s3;
+//    private final S3Client s3;
     private final S3Presigner presigner;
     @Value("${ecom.s3.bucket}")
     private String bucket;
