@@ -1,0 +1,26 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+build/
+
+# env files
+.env
+.env.local
+.env.development
+.env.production
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# system
+.DS_Store
+Thumbs.db
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*

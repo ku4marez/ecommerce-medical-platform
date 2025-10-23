@@ -10,6 +10,5 @@ public record ReserveRequest(
     @NotBlank String productId,
     @NotBlank String orderId,
     @NotNull @Positive Integer quantity,
-    @Positive Integer ttlSeconds,         // optional; default in service if null
-    String idempotencyKey                 // optional; client-provided for extra safety
+    @Positive Integer ttlSeconds
 ) {}

@@ -88,7 +88,7 @@ public class InventoryService {
         entity.setOrderId(req.orderId());
         entity.setQuantity(req.quantity());
         entity.setStatus(ReservationStatus.PENDING);
-        entity.setExpiresAt(Instant.now().plus(Duration.ofMinutes(10))); // default TTL
+        entity.setExpiresAt(Instant.now().plusSeconds(req.ttlSeconds())); // default TTL
         var saved = reservations.save(entity);
 
         // 4. Publish event

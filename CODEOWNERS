@@ -8,8 +8,8 @@
 /services/payment-service/          @ku4marez
 
 # Frontend
-/clients/admin-ui/                  @ku4marez
-/clients/shop-ui/                   @ku4marez
+/clients/admin-client/                  @ku4marez
+/clients/customer-client/               @ku4marez
 
 # Infra
 /infra/                             @ku4marez

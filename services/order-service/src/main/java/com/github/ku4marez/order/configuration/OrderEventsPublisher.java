@@ -24,7 +24,9 @@ public class OrderEventsPublisher {
             "customerId", e.getCustomerId(),
             "items", e.getItems(),
             "total", e.getTotalAmount(),
-            "status", e.getStatus().name()
+            "status", e.getStatus().name(),
+            "ttlSeconds", 600
+//            "idempotencyKey", e.getIdempotencyKey()
         ));
     }
 

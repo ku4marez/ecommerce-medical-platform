@@ -32,8 +32,7 @@ public class OrderEventsConsumer {
                     (String) i.get("productId"),
                     orderId,
                     (Integer) i.get("quantity"),
-                    null,   // ttlSeconds
-                    null    // idempotencyKey
+                    (Integer) msg.get("ttlSeconds")
                 )));
 
             case "order.cancelled", "order.failed" ->

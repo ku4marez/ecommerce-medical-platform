@@ -89,37 +89,37 @@ jobs:
         id: filter
         with:
           filters: |
-            admin_ui: { paths: ['clients/admin-ui/**'] }
-            shop_ui:  { paths: ['clients/shop-ui/**'] }
+            admin_ui: { paths: ['clients/admin-client/**'] }
+            shop_ui:  { paths: ['clients/customer-client/**'] }
 
       # Admin UI
       - name: Setup Node for admin-ui
-        if: steps.filter.outputs.admin_ui == 'true'
+        if: steps.filter.outputs.admin_client == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: npm
-          cache-dependency-path: clients/admin-ui/package-lock.json
+          cache-dependency-path: clients/admin-client/package-lock.json
 
       - name: Build admin-ui
-        if: steps.filter.outputs.admin_ui == 'true'
-        working-directory: clients/admin-ui
+        if: steps.filter.outputs.admin_client == 'true'
+        working-directory: clients/admin-client
         run: |
           npm ci
           npm run build
 
       # Shop UI
       - name: Setup Node for shop-ui
-        if: steps.filter.outputs.shop_ui == 'true'
+        if: steps.filter.outputs.customer_client == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: npm
-          cache-dependency-path: clients/shop-ui/package-lock.json
+          cache-dependency-path: clients/customer-client/package-lock.json
 
       - name: Build shop-ui
-        if: steps.filter.outputs.shop_ui == 'true'
-        working-directory: clients/shop-ui
+        if: steps.filter.outputs.customer_client == 'true'
+        working-directory: clients/customer-client
         run: |
           npm ci
           npm run build

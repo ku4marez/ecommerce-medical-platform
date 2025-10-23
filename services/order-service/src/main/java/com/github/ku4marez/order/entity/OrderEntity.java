@@ -23,6 +23,7 @@ public class OrderEntity extends PersistentAuditedEntity {
     private OrderStatus status;               // NEW, PENDING_PAYMENT, PAID, FULFILLED, FAILED, CANCELLED
     private BigDecimal totalAmount;
     private String currency;
+    //TODO might need to get rid of
     private String idempotencyKey;            // per-client request key
     private List<OrderItem> items;            // embedded items
     private String paymentLinkId;             // link to PaymentLink

@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface ReservationRepository extends MongoRepository<ReservationEntity, String>,
     ReservationRepositoryCustom {
     Optional<ReservationEntity> findByProductIdAndOrderId(String productId, String orderId);
+    Optional<ReservationEntity> findBy(String productId, String orderId);
+
 }
