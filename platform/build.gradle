@@ -5,6 +5,7 @@ javaPlatform { allowDependencies() }
 dependencies {
     // Bring in upstream BOMs (no versions elsewhere)
     api(platform("org.springframework.boot:spring-boot-dependencies:3.5.4"))
+    api platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.3")
     api(platform("software.amazon.awssdk:bom:2.25.64"))
 
     // Your pinned versions for libs not covered (or you want to override)

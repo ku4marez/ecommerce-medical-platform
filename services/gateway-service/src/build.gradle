@@ -1,0 +1,24 @@
+plugins {
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.5'
+    id 'java'
+}
+
+group = 'com.github.ku4marez'
+version = '1.0.0'
+java {
+    sourceCompatibility = '21'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // Optional: reuse your security starter
+    implementation project(':starters:ecom-security-starter')
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

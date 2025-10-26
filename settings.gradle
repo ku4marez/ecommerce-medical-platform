@@ -9,8 +9,9 @@ include(
         ':services:order-service',
         ':services:payment-service',
         ':services:inventory-service',
-        ':clients:admin-ui',
-        ':clients:shop-ui'
+        ':services:gateway-service',
+        ':clients:admin-client',
+        ':clients:customer-client'
 )
 
 project(":platform").buildFileName = "build.gradle"

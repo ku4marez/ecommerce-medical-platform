@@ -11,6 +11,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Mapper(
@@ -26,6 +29,10 @@ public interface OrderMapper {
     @Mapping(target = "idempotencyKey", ignore = true) // set from header
     @Mapping(target = "paymentLinkId", ignore = true)
     @Mapping(target = "items", source = "items")
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "updatedDate", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
     OrderEntity toNewEntity(OrderCreateRequest req);
 
     List<OrderItem> toItems(List<OrderItemCreateDto> items);
@@ -47,5 +54,15 @@ public interface OrderMapper {
                 i.getProductId(), i.getProductName(), i.getSku(),
                 i.getQuantity(), i.getUnitPrice()))
             .toList();
+    }
+
+    @SuppressWarnings("unused")
+    default Instant map(LocalDateTime value) {
+        return value != null ? value.atZone(ZoneId.systemDefault()).toInstant() : null;
+    }
+
+    @SuppressWarnings("unused")
+    default LocalDateTime map(Instant value) {
+        return value != null ? LocalDateTime.ofInstant(value, ZoneId.systemDefault()) : null;
     }
 }

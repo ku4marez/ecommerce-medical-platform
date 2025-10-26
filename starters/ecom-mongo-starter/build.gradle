@@ -7,6 +7,7 @@ dependencies {
 
     compileOnly 'jakarta.annotation:jakarta.annotation-api'
     compileOnly 'org.mongodb:mongodb-driver-sync'
+    annotationProcessor platform(project(':platform'))
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 }
 

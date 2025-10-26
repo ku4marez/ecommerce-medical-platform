@@ -9,6 +9,7 @@ dependencies {
     api 'org.springframework.security:spring-security-oauth2-jose'
 
     api 'org.springframework.data:spring-data-commons'
+    annotationProcessor platform(project(':platform'))
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 }
 

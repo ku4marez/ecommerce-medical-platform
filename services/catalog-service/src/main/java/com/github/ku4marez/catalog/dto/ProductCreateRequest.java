@@ -1,7 +1,6 @@
 package com.github.ku4marez.catalog.dto;
 
 import com.github.ku4marez.catalog.entity.ProductStatus;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

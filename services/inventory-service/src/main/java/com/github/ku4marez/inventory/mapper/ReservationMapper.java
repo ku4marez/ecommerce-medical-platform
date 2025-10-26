@@ -8,6 +8,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 @Mapper(
     componentModel = "spring",
     unmappedTargetPolicy = ReportingPolicy.ERROR,
@@ -19,7 +23,21 @@ public interface ReservationMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", constant = "PENDING")
     @Mapping(target = "expiresAt", ignore = true) // service computes from ttlSeconds
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "updatedDate", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
     ReservationEntity toNewEntity(ReserveRequest req);
 
     ReservationResponse toResponse(ReservationEntity e);
+
+    @SuppressWarnings("unused")
+    default Instant map(LocalDateTime value) {
+        return value != null ? value.atZone(ZoneId.systemDefault()).toInstant() : null;
+    }
+
+    @SuppressWarnings("unused")
+    default LocalDateTime map(Instant value) {
+        return value != null ? LocalDateTime.ofInstant(value, ZoneId.systemDefault()) : null;
+    }
 }

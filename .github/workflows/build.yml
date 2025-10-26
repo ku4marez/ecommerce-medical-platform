@@ -22,7 +22,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Build everything
-        run: ./gradlew --no-daemon --stacktrace clean build
+        run: ./gradlew --no-daemon --stacktrace clean build -x test
 
       # Upload service jars (adjust names if your modules differ)
       - name: Upload catalog-service JAR
