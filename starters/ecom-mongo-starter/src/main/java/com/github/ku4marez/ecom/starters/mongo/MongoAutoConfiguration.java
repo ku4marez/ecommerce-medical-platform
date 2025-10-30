@@ -50,7 +50,7 @@ public class MongoAutoConfiguration {
                     // create indexes (use createIndex, ensureIndex is deprecated)
                     var ops = mongo.indexOps(spec.name());
                     for (var idx : spec.indexes()) {
-                        ops.createIndex(idx);
+                        ops.ensureIndex(idx);
                     }
                 }
             }

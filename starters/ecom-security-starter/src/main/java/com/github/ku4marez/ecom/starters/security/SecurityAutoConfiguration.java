@@ -4,23 +4,22 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 @AutoConfiguration
 @EnableConfigurationProperties(JwtSecurityProperties.class)
 @EnableMethodSecurity
 @ConditionalOnProperty(prefix = "ecom.security", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class SecurityAutoConfiguration {
 
     @Bean
@@ -48,17 +47,10 @@ public class SecurityAutoConfiguration {
         throw new IllegalStateException("Configure ecom.security.jwt.issuer-uri (or jwk-set-uri / hmac-secret)");
     }
 
-    @Bean @ConditionalOnMissingBean
-    org.springframework.core.convert.converter.Converter<Jwt, JwtAuthenticationToken> jwtAuthConverter(JwtSecurityProperties p) {
-        return jwt -> {
-            Collection<?> roles = (Collection<?>) jwt.getClaims().getOrDefault(p.getRolesClaim(), java.util.List.of());
-            var authorities = roles.stream()
-                .map(Object::toString)
-                .map(r -> p.getRolePrefix() + r)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toSet());
-            return new JwtAuthenticationToken(jwt, authorities);
-        };
+    @Bean
+    @ConditionalOnMissingBean
+    Converter<Jwt, JwtAuthenticationToken> jwtAuthConverter(JwtSecurityProperties props) {
+        return new JwtAuthConverter(props);
     }
 
     /** Auditor from SecurityContext.getName() */

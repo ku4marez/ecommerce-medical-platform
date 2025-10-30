@@ -28,7 +28,7 @@ ecom:
   # S3 / MinIO config used by the presign service
   s3:
     bucket: ${S3_BUCKET:local-bucket}
-    endpoint: ${S3_ENDPOINT:}          # e.g. http://localhost:9000 for MinIO; leave empty for AWS
+    endpoint: ${S3_ENDPOINT:http://localhost:9000}          # e.g. http://localhost:9000 for MinIO; leave empty for AWS
     region: ${S3_REGION:us-east-1}
     path-style-access: ${S3_PATH_STYLE:true}   # true for MinIO; AWS can be false
     presign-ttl-seconds: 300

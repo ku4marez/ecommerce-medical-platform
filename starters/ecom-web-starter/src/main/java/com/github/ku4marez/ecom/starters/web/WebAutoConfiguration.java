@@ -11,6 +11,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @AutoConfiguration
 @EnableConfigurationProperties(WebProps.class)
 @ConditionalOnProperty(prefix="ecom.web.cors", name="enabled", havingValue="true", matchIfMissing = true)
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @Import(ApiErrorHandler.class)
 public class WebAutoConfiguration {
 
