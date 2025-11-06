@@ -1,0 +1,15 @@
+replicaCount: 1
+
+image:
+  repository: ku4marez/myrepo
+  tag: gateway-latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 7070
+
+resources: {}
+
+env:
+  SPRING_PROFILES_ACTIVE: k8s

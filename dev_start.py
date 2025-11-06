@@ -1,66 +1,51 @@
 #!/usr/bin/env python3
-"""
-Dev Cluster Startup Script
---------------------------
-Bootstraps local Minikube cluster, builds all microservice Docker images,
-and deploys them via Helm charts under infra/helm/.
-"""
+import subprocess, os, sys, platform
 
-import subprocess
-import os
-import sys
-
-SERVICES = ["catalog", "inventory", "order", "payment"]
+SERVICES = ["catalog", "inventory", "order", "payment", "gateway"]
+DOCKER_USER = "ku4marez"
+REPO = "myrepo"
 HELM_DIR = "infra/helm"
 
-def run(cmd, **kwargs):
-    """Execute shell command."""
+def run(cmd):
     print(f"\n▶️  {cmd}")
-    subprocess.run(cmd, shell=True, check=True, **kwargs)
+    subprocess.run(cmd, shell=True, check=True)
 
 def main():
-    print("🚀 Starting local development cluster setup")
+    print("Starting local k3d dev cluster setup")
 
-    # Ensure Minikube is running
+    # 1. Create or reuse cluster
     try:
-        subprocess.run("minikube status", shell=True, check=True, stdout=subprocess.DEVNULL)
-        print("✅ Minikube already running")
+        subprocess.run("k3d cluster get dev-cluster", shell=True, check=True, stdout=subprocess.DEVNULL)
+        print("k3d cluster already running")
     except subprocess.CalledProcessError:
-        run("minikube start --driver=docker --cpus=4 --memory=8192")
+        run("k3d cluster create dev-cluster --servers 1 --agents 2 --port 8080:80@loadbalancer")
 
-    # Switch Docker context to Minikube
-    print("🔧 Switching Docker context to Minikube")
-    if os.name == "nt":  # Windows
-        run('minikube docker-env | Invoke-Expression', executable="powershell.exe")
-    else:
-        run('eval $(minikube docker-env)')
-
-    # Build Docker images for all services
+    # 2. Build + push images
     for svc in SERVICES:
-        service_dir = os.path.join("services", f"{svc}-service")
-        if not os.path.isdir(service_dir):
+        svc_dir = os.path.join("services", f"{svc}-service")
+        if not os.path.isdir(svc_dir):
             print(f"⚠️  Skipping {svc}, directory not found.")
             continue
-        print(f"🐳 Building {svc}-service Docker image")
-        run(f"docker build -t {svc}-service:latest {service_dir}")
+        tag = f"{DOCKER_USER}/{REPO}:{svc}-latest"
+        run(f"docker build -t {tag} {svc_dir}")
+        run(f"docker push {tag}")
 
-    # Deploy via Helm
+    # 3. Deploy with Helm
     for svc in SERVICES:
         chart_path = os.path.join(HELM_DIR, f"{svc}-service")
-        print(f"📦 Deploying {svc}-service via Helm")
-        run(f"helm upgrade --install {svc} {chart_path}")
+        run(f"helm upgrade --install {svc} {chart_path} "
+            f"--set image.repository={DOCKER_USER}/{REPO} "
+            f"--set image.tag={svc}-latest")
 
-    # Show cluster status
-    print("\n🔍 Cluster overview:")
-    run("kubectl get pods")
-    run("kubectl get svc")
+    # 4. Show cluster state
+    run("kubectl get pods -A")
+    run("kubectl get svc -A")
 
-    print("\n🎉 All services deployed successfully!")
-    print("Use `minikube service <service-name>` to access individual apps.")
+    print("\nDeployment complete. Visit http://localhost:8080 (via ingress).")
 
 if __name__ == "__main__":
     try:
         main()
     except subprocess.CalledProcessError as e:
-        print(f"❌ Command failed: {e}")
+        print(f"Command failed: {e}")
         sys.exit(1)

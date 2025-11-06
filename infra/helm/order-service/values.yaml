@@ -1,0 +1,15 @@
+replicaCount: 1
+
+image:
+  repository: ku4marez/myrepo
+  tag: order-latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+resources: {}
+
+env:
+  SPRING_PROFILES_ACTIVE: k8s

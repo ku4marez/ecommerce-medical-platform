@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  SPRING_PROFILES_ACTIVE: "k8s"
+  MONGO_CATALOG_URI: "mongodb://root:password@catalog-mongo:27017/catalog"
+  MONGO_INVENTORY_URI: "mongodb://root:password@inventory-mongo:27017/inventory"
+  MONGO_ORDERS_URI: "mongodb://root:password@orders-mongo:27017/orders"
+  MONGO_PAYMENTS_URI: "mongodb://root:password@payments-mongo:27017/payments"
+  KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+  MINIO_ENDPOINT: "http://minio:9000"
+  MINIO_ACCESS_KEY: "minioadmin"
+  MINIO_SECRET_KEY: "minioadmin"
+  STRIPE_API_URL: "http://stripe-mock:12111"
