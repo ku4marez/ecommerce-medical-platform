@@ -3,7 +3,10 @@ set -e
 
 DOCKER_USER="ku4marez"
 REPO="myrepo"
+GPR_USER="ku4marez"
+GPR_TOKEN="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"
 
+# Define all services
 SERVICES=(
   "catalog-service:catalog-latest"
   "inventory-service:inventory-latest"
@@ -20,10 +23,29 @@ docker login
 for svc in "${SERVICES[@]}"; do
   NAME="${svc%%:*}"
   TAG="${svc##*:}"
-  echo -e "\nBuilding $NAME -> $DOCKER_USER/$REPO:$TAG"
-  docker build -t "$DOCKER_USER/$REPO:$TAG" "./services/$NAME" 2>/dev/null || \
-  docker build -t "$DOCKER_USER/$REPO:$TAG" "./clients/$NAME" 2>/dev/null || true
-  docker push "$DOCKER_USER/$REPO:$TAG"
+  IMAGE="$DOCKER_USER/$REPO:$TAG"
+
+  # Determine where the Dockerfile is located
+  if [[ -f "services/$NAME/Dockerfile" ]]; then
+    DOCKERFILE="services/$NAME/Dockerfile"
+    echo "Building backend service $NAME -> $IMAGE"
+    docker build \
+      -f "$DOCKERFILE" \
+      -t "$IMAGE" \
+      --build-arg GPR_USER="$GPR_USER" \
+      --build-arg GPR_TOKEN="$GPR_TOKEN" \
+      .
+  elif [[ -f "clients/$NAME/Dockerfile" ]]; then
+    DOCKERFILE="clients/$NAME/Dockerfile"
+    echo "Building frontend $NAME -> $IMAGE"
+    docker build -f "$DOCKERFILE" -t "$IMAGE" .
+  else
+    echo "Skipping $NAME (Dockerfile not found)"
+    continue
+  fi
+
+  echo "Pushing $IMAGE"
+  docker push "$IMAGE"
 done
 
-echo -e "\nAll images built and pushed to Docker Hub!"
+echo "All images built and pushed successfully."

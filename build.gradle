@@ -13,8 +13,8 @@ allprojects {
         maven {
             url = uri("https://maven.pkg.github.com/ku4marez/common-libraries")
             credentials {
-                username = findProperty("gpr.user") ?: System.getenv("GPR_USER")
-                password = findProperty("gpr.token") ?: System.getenv("GPR_TOKEN")
+                username = System.getenv("GPR_USER") ?: project.findProperty("gpr.user")
+                password = System.getenv("GPR_TOKEN") ?: project.findProperty("gpr.key")
             }
         }
     }

@@ -1,8 +1,12 @@
 FROM node:20-alpine AS build
 WORKDIR /app
-COPY package*.json ./
+
+COPY clients/admin-client/package*.json ./
+
 RUN npm ci
-COPY . .
+
+COPY clients/admin-client/. .
+
 RUN npm run build
 
 FROM nginx:alpine

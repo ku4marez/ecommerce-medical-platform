@@ -1,0 +1,14 @@
+# Ignore build outputs and dependencies
+node_modules
+dist
+build
+.cache
+
+# But DO NOT ignore source files or CSS
+!src/**
+!*.css
+
+# Misc
+.git
+Dockerfile
+npm-debug.log

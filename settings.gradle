@@ -1,22 +1,31 @@
-rootProject.name = 'ecommerce-medical-platform'
+rootProject.name = "ecommerce-medical-platform"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-// (optional) nice DX for referencing subprojects as code
-enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
+def includeIfExists(String path) {
+    if (file(path).isDirectory()) {
+        include(path.replace("/", ":"))
+    } else {
+        println "Skipping missing module: $path"
+    }
+}
 
-include(
-        'platform',
-        ':services:catalog-service',
-        ':services:order-service',
-        ':services:payment-service',
-        ':services:inventory-service',
-        ':services:gateway-service',
-        ':clients:admin-client',
-        ':clients:customer-client'
-)
+// Shared platform
+includeIfExists("platform")
 
-project(":platform").buildFileName = "build.gradle"
-include 'starters'
-include 'starters:ecom-security-starter'
-include 'starters:ecom-kafka-starter'
-include 'starters:ecom-web-starter'
-include 'starters:ecom-mongo-starter'
+// Starters
+includeIfExists("starters")
+includeIfExists("starters/ecom-security-starter")
+includeIfExists("starters/ecom-kafka-starter")
+includeIfExists("starters/ecom-web-starter")
+includeIfExists("starters/ecom-mongo-starter")
+
+// Services
+includeIfExists("services/catalog-service")
+includeIfExists("services/order-service")
+includeIfExists("services/payment-service")
+includeIfExists("services/inventory-service")
+includeIfExists("services/gateway-service")
+
+// Clients
+includeIfExists("clients/admin-client")
+includeIfExists("clients/customer-client")
