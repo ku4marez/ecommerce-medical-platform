@@ -38,7 +38,8 @@ Auth and common libs live in separate repos (reused here).
 - k3d cluster create dev --servers 1 --agents 2 --port 8080:80@loadbalancer
 - k3d cluster delete dev
 - k3d cluster list
-
+- k3d cluster start dev
+- k3d cluster stop dev
 - kubectl port-forward svc/my-service 8081:80 -n default
 
 # Run build script (git bash)
