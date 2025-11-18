@@ -1,6 +1,0 @@
-apiVersion: v2
-name: admin-client
-description: Helm chart for Admin client
-type: application
-version: 0.1.0     # Chart version
-appVersion: "1.0"  # App version (can match Docker tag)
