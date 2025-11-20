@@ -74,7 +74,8 @@ jobs:
           echo "tasks=${tasks[*]}" >> "$GITHUB_OUTPUT"
 
       - name: Show selected tasks
-        run: echo "Gradle tasks: ${{ steps.pick.outputs.tasks }}"
+        run: |
+          echo "Gradle tasks: ${{ steps.pick.outputs.tasks }}"
 
       - name: Gradle build (selected modules)
         run: ./gradlew --no-daemon --stacktrace ${{ steps.pick.outputs.tasks }}
