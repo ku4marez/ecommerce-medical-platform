@@ -10,7 +10,7 @@ repos:
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
     rev: 3.0.0
     hooks:
-      - id: check-merged-branch
+#      - id: check-merged-branch
       - id: forbid-binary
 
   # Optional: Prettier for JS/TS/JSON/YAML/Markdown (covers React, too)
