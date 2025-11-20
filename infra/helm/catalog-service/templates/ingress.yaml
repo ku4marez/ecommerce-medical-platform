@@ -9,7 +9,7 @@ spec:
     - host: "dev.local"
       http:
         paths:
-          - path: /catalog
+          - path: {{ .Values.ingress.path }}
             pathType: Prefix
             backend:
               service:

@@ -9,6 +9,9 @@ service:
   type: ClusterIP
   port: 7070
 
+ingress:
+  path: /gateway
+
 resources: {}
 
 env:
