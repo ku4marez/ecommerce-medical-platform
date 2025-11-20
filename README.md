@@ -45,3 +45,27 @@ Auth and common libs live in separate repos (reused here).
 # Run build script (git bash)
 - chmod +x build.sh
 - ./build.sh
+
+# Git basics
+- git status                                # check what changed (changed)
+- git switch -c feature/name                # create new feature branch
+- git switch <branch>                       # switch branches
+- git add -p                                # stage changes interactively
+- git commit -m "msg"                       # commit
+- git fetch                                 # update remote refs
+- git pull --rebase origin main             # update branch with main (clean history)
+- git push -u origin feature/name           # push new branch
+- git push --force-with-lease               # push after rebase (safe force)
+- git diff                                  # view unstaged changes
+- git diff --staged                         # view staged changes
+- git restore .                             # discard local unstaged edits
+- git reset --hard                          # reset everything to last commit
+- git reset HEAD~1                          # remove last commit (keep files)
+- git stash                                 # stash current changes
+- git stash pop                             # apply & remove stash
+- git branch                                # list branches
+- git branch -D feature/name                # delete local branch
+- git push origin --delete feature/name     # delete remote branch
+- git rebase --continue                     # continue after conflict resolution
+- git rebase --abort                        # stop rebase if things go wrong
+- git log --oneline --graph --decorate      # compact commit graph
