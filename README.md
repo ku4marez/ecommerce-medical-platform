@@ -69,3 +69,85 @@ Auth and common libs live in separate repos (reused here).
 - git rebase --continue                     # continue after conflict resolution
 - git rebase --abort                        # stop rebase if things go wrong
 - git log --oneline --graph --decorate      # compact commit graph
+
+# navigation
+- ls                     # list files
+- ls -la                 # list all w/ details
+- cd <dir>               # change directory
+- cd ..                  # go up
+- pwd                    # current path
+
+# files & dirs
+- mkdir <dir>            # make directory
+- mkdir -p a/b/c         # nested dirs
+- touch <file>           # create empty file
+- cp <src> <dst>         # copy file
+- cp -r <src> <dst>      # copy directory
+- mv <src> <dst>         # move/rename
+- rm <file>              # delete file
+- rm -r <dir>            # delete directory
+- rm -rf <dir>           # delete w/o prompts
+
+# view / edit
+- cat <file>             # print file
+- less <file>            # scroll view
+- head <file>            # first lines
+- tail <file>            # last lines
+- tail -f <file>         # live log
+- nano <file>            # edit (easy)
+- vim <file>             # edit (advanced)
+- code <file>            # open in VS Code (WSL)
+
+# search
+- grep "txt" <file>      # search in file
+- grep -R "txt" .        # recursive search
+- grep -n "txt" <file>   # with line numbers
+
+# find
+- find . -name "*.yml"   # find by name
+- find . -type f -name "x" # find files
+- find . -name "*Zone*"  # match by pattern
+
+# permissions
+- chmod +x file.sh       # make executable
+- chmod 644 file         # rw-r--r--
+- chmod 755 file         # rwxr-xr-x
+
+# processes
+- ps aux                 # list processes
+- top                    # live view
+- htop                   # better top
+- kill <pid>             # kill process
+- kill -9 <pid>          # force kill
+
+# networking
+- curl <url>             # fetch
+- wget <url>             # download
+- ping google.com        # test network
+- netstat -tulpn         # ports
+
+# system info
+- uname -a               # system info
+- df -h                  # disk usage
+- du -sh <dir>           # folder size
+- free -h                # RAM
+
+# archive
+- tar -czf a.tar.gz dir/ # create tar.gz
+- tar -xzf a.tar.gz      # extract
+- unzip file.zip         # unzip
+
+# package management (Ubuntu/WSL)
+- sudo apt update        # refresh packages
+- sudo apt install pkg   # install
+- sudo apt remove pkg    # remove
+
+# piping & redirects
+- cmd > f                # overwrite file
+- cmd >> f               # append
+- cmd | grep "x"         # filter
+- cmd | less             # scroll
+
+# wsl management
+- wsl --list             # list distros
+- wsl --shutdown         # stop WSL VM

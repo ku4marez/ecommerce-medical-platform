@@ -73,9 +73,6 @@ node_modules/ # If using Node.js in the project
 .env           # For environment variables
 coverage/      # If using test coverage tools
 
-# Ignore Gradle project-specific cache directory
-.gradle
-
 # Ignore Gradle build output directory
 build
 /.env
