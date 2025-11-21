@@ -26,7 +26,8 @@ jobs:
 
   backend-build:
     runs-on: ubuntu-latest
-    needs: [ precommit, gradle-wrapper-validation ]
+#    needs: [ precommit, gradle-wrapper-validation ]
+    needs: [ gradle-wrapper-validation ]
     steps:
       - uses: actions/checkout@v4
 
