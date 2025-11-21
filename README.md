@@ -164,3 +164,9 @@ Auth and common libs live in separate repos (reused here).
 - ssh-keygen -t ed25519 -C "ku4marez@gmail.com"
 - cat ~/.ssh/id_ed25519.pub
 - ssh -T git@github.com
+
+# precommit local setup
+- sudo apt update
+- sudo apt install pre-commit
+- pre-commit run --all-files
+- pre-commit autoupdate
