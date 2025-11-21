@@ -12,10 +12,6 @@ dependencies {
 	implementation libs.spring.kafka
 	implementation libs.spring.boot.starter.security
 
-	implementation libs.spring.boot.starter.cache
-	implementation libs.caffeine
-	implementation libs.spring.boot.starter.data.redis
-
 	implementation libs.resilience4j.spring.boot3
 	implementation libs.resilience4j.ratelimiter
 	implementation libs.resilience4j.circuitbreaker
@@ -40,4 +36,10 @@ dependencies {
     testAnnotationProcessor libs.mapstruct.processor
 
     implementation libs.prometheus
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:3.3.4"
+    }
 }

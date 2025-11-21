@@ -1,6 +1,5 @@
 package com.github.ku4marez.order.service;
 
-import com.github.ku4marez.order.configuration.CacheConfiguration;
 import com.github.ku4marez.order.configuration.OrderEventsPublisher;
 import com.github.ku4marez.order.dto.OrderCreateRequest;
 import com.github.ku4marez.order.dto.OrderOptionResponse;
@@ -25,9 +24,11 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+import static com.github.ku4marez.order.constant.ApplicationConstant.ORDER_BY_ID;
+
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = CacheConfiguration.ORDER_BY_ID)
+@CacheConfig(cacheNames = ORDER_BY_ID)
 public class OrderService {
 
     private final OrderRepository repo;

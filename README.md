@@ -172,6 +172,8 @@ Auth and common libs live in separate repos (reused here).
 - wsl --shutdown         # stop WSL VM
 
 # repo access with ssh
+- git config --global user.name "ku4ma"
+- git config --global user.email "ku4marez@gmail.com"
 - ssh-keygen -t ed25519 -C "ku4marez@gmail.com"
 - cat ~/.ssh/id_ed25519.pub
 - ssh -T git@github.com

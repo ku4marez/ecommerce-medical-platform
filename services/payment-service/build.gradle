@@ -13,7 +13,6 @@ dependencies {
 
 	// Stripe
 	implementation libs.stripe
-	implementation libs.spring.boot.starter.data.redis
 
 	implementation libs.resilience4j.spring.boot3
 

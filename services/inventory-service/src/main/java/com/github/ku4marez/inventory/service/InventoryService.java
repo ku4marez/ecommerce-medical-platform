@@ -11,7 +11,6 @@ import com.github.ku4marez.inventory.mapper.StockItemMapper;
 import com.github.ku4marez.inventory.repository.ReservationRepository;
 import com.github.ku4marez.inventory.repository.StockItemRepository;
 import lombok.RequiredArgsConstructor;
-import com.github.ku4marez.inventory.configuration.CacheConfiguration;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,14 +25,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.NoSuchElementException;
 
+import static com.github.ku4marez.inventory.constant.ApplicationConstant.STOCK_BY_PRODUCT;
+
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = CacheConfiguration.STOCK_BY_PRODUCT)
+@CacheConfig(cacheNames = STOCK_BY_PRODUCT)
 public class InventoryService {
+
     private final ReservationRepository reservations;
     private final StockItemRepository stock;
     private final ReservationMapper reservationMapper;
@@ -41,7 +42,6 @@ public class InventoryService {
     private final MongoTemplate mongo;
     private final StockEventsPublisher publisher;
 
-    // --- Queries ---
     @Cacheable(key = "#productId")
     public StockItemResponse getStock(String productId) {
         var si = stock.findByProductId(productId)
@@ -52,6 +52,7 @@ public class InventoryService {
                 s.setReserved(0);
                 return stock.save(s);
             });
+
         return stockItemMapper.toResponse(si);
     }
 
@@ -61,26 +62,38 @@ public class InventoryService {
         return reservationMapper.toResponse(r);
     }
 
-    // --- Commands ---
-
-    /** Idempotent reservation. Decrease available, increase reserved, create Reservation. */
+    /**
+     * Idempotent reservation.
+     * Decrease available, increase reserved, create Reservation.
+     */
     @Transactional
     @CacheEvict(key = "#req.productId")
     public ReservationResponse reserve(ReserveRequest req) {
+
         // 1. Idempotency: existing reservation
         var existing = reservations.findByProductIdAndOrderId(req.productId(), req.orderId());
-        if (existing.isPresent()) return reservationMapper.toResponse(existing.get());
+        if (existing.isPresent()) {
+            return reservationMapper.toResponse(existing.get());
+        }
 
         // 2. Atomic update of stock counts
         Query q = new Query(Criteria.where("productId").is(req.productId())
             .and("available").gte(req.quantity()));
+
         Update u = new Update()
             .inc("available", -req.quantity())
             .inc("reserved", req.quantity())
             .currentDate("updatedDate");
 
-        var updated = mongo.findAndModify(q, u, FindAndModifyOptions.options().returnNew(true), StockItemEntity.class);
-        if (updated == null) throw new IllegalStateException("Insufficient stock for product " + req.productId());
+        var updated = mongo.findAndModify(
+            q, u,
+            FindAndModifyOptions.options().returnNew(true),
+            StockItemEntity.class
+        );
+
+        if (updated == null) {
+            throw new IllegalStateException("Insufficient stock for product " + req.productId());
+        }
 
         // 3. Create reservation
         var entity = new ReservationEntity();
@@ -88,7 +101,8 @@ public class InventoryService {
         entity.setOrderId(req.orderId());
         entity.setQuantity(req.quantity());
         entity.setStatus(ReservationStatus.PENDING);
-        entity.setExpiresAt(Instant.now().plusSeconds(req.ttlSeconds())); // default TTL
+        entity.setExpiresAt(Instant.now().plusSeconds(req.ttlSeconds()));
+
         var saved = reservations.save(entity);
 
         // 4. Publish event
@@ -97,20 +111,27 @@ public class InventoryService {
         return reservationMapper.toResponse(saved);
     }
 
-    /** Release reservation back to stock. */
+    /**
+     * Release reservation back to stock.
+     */
     @Transactional
     @CacheEvict(key = "#req.productId")
     public ReservationResponse release(ReleaseRequest req) {
+
         var r = reservations.findByProductIdAndOrderId(req.productId(), req.orderId())
             .orElseThrow(() -> new NoSuchElementException("Reservation not found"));
-        if (r.getStatus() == ReservationStatus.RELEASED) return reservationMapper.toResponse(r);
 
-        // revert counts
+        if (r.getStatus() == ReservationStatus.RELEASED) {
+            return reservationMapper.toResponse(r);
+        }
+
+        // Revert counts
         Query q = new Query(Criteria.where("productId").is(req.productId()));
         Update u = new Update()
             .inc("available", r.getQuantity())
-            .inc("reserved", r.getQuantity())
+            .inc("reserved", -r.getQuantity())   // IMPORTANT: fixed your bug
             .currentDate("updatedDate");
+
         mongo.updateFirst(q, u, StockItemEntity.class);
 
         r.setStatus(ReservationStatus.RELEASED);
@@ -120,12 +141,18 @@ public class InventoryService {
         return reservationMapper.toResponse(r);
     }
 
-    /** Confirm reservation (counts stay same). */
+    /**
+     * Confirm reservation (counts stay same).
+     */
     @Transactional
     public ReservationResponse confirm(ConfirmRequest req) {
+
         var r = reservations.findByProductIdAndOrderId(req.productId(), req.orderId())
             .orElseThrow(() -> new NoSuchElementException("Reservation not found"));
-        if (r.getStatus() == ReservationStatus.CONFIRMED) return reservationMapper.toResponse(r);
+
+        if (r.getStatus() == ReservationStatus.CONFIRMED) {
+            return reservationMapper.toResponse(r);
+        }
 
         r.setStatus(ReservationStatus.CONFIRMED);
         reservations.save(r);
@@ -134,12 +161,13 @@ public class InventoryService {
         return reservationMapper.toResponse(r);
     }
 
-    /** Manual stock adjustment. */
     @Transactional
+    @CacheEvict(key = "#req.productId")
     public StockItemResponse adjust(AdjustStockRequest req) {
+
         Query q = new Query(Criteria.where("productId").is(req.productId()));
         Update u = new Update()
-            .inc("available", req.delta())  // add or subtract
+            .inc("available", req.delta())
             .currentDate("updatedDate");
 
         var updated = mongo.findAndModify(
@@ -149,6 +177,7 @@ public class InventoryService {
         );
 
         publisher.stockAdjusted(updated, req.reason());
+
         return stockItemMapper.toResponse(updated);
     }
 
@@ -161,9 +190,14 @@ public class InventoryService {
     }
 
     public Page<ReservationResponse> listReservations(
-        String productId, String orderId, ReservationStatus status, Pageable pageable) {
+        String productId,
+        String orderId,
+        ReservationStatus status,
+        Pageable pageable
+    ) {
         return reservations.search(productId, orderId, status, pageable)
             .map(reservationMapper::toResponse);
     }
 }
+
 

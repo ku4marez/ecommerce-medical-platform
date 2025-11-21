@@ -36,3 +36,9 @@ dependencies {
 
     implementation libs.prometheus
 }
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:3.3.4"
+    }
+}
