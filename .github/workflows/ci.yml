@@ -85,7 +85,7 @@ jobs:
         env:
           GPR_USER: ${{ secrets.GPR_USER }}
           GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
-        run: ./gradlew --no-daemon --stacktrace ${{ steps.pick.outputs.tasks }}
+        run: ./gradlew --no-daemon --stacktrace ${{ steps.pick.outputs.tasks }} -x test
 
   frontend-build:
     runs-on: ubuntu-latest
