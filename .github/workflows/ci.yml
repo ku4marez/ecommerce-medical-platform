@@ -82,6 +82,9 @@ jobs:
           echo "Gradle tasks: ${{ steps.pick.outputs.tasks }}"
 
       - name: Gradle build (selected modules)
+        env:
+          GPR_USER: ${{ secrets.GPR_USER }}
+          GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
         run: ./gradlew --no-daemon --stacktrace ${{ steps.pick.outputs.tasks }}
 
   frontend-build:
