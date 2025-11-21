@@ -23,7 +23,7 @@ jobs:
 
       - name: Set up GitHub Packages credentials
         run: |
-          echo "GPR_USER=${{ github.actor }}" >> $GITHUB_ENV
+          echo "GPR_USER=${{ secrets.GPR_USER  }}" >> $GITHUB_ENV
           echo "GPR_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
 
       - name: Build everything
