@@ -69,6 +69,14 @@ Auth and common libs live in separate repos (reused here).
 - git rebase --continue                     # continue after conflict resolution
 - git rebase --abort                        # stop rebase if things go wrong
 - git log --oneline --graph --decorate      # compact commit graph
+- git reflog                                # shows every place HEAD pointed in the past
+- git cherry-pick <commit>                  # apply commit from other branch
+- git fetch --prune                         # clean up local state branches
+
+# .gitingore handling. Remove tracked files after adding to gitignore
+- git rm --cached -r .
+- git add .
+- git commit -m "Clean ignored files"
 
 # navigation
 - ls                     # list files

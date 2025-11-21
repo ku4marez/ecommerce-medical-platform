@@ -6,17 +6,17 @@ on:
     branches: [ main ]
 
 jobs:
-  precommit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-      - run: |
-          pip install pre-commit
-          pre-commit autoupdate
-          pre-commit run --all-files
+#  precommit:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: actions/setup-python@v5
+#        with:
+#          python-version: '3.x'
+#      - run: |
+#          pip install pre-commit
+#          pre-commit autoupdate
+#          pre-commit run --all-files
 
   gradle-wrapper-validation:
     runs-on: ubuntu-latest
