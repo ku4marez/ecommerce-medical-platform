@@ -56,6 +56,8 @@ Auth and common libs live in separate repos (reused here).
 - ./build.sh
 
 # Git basics
+- git clone git@github.com:ku4marez/ecommerce-medical-platform.git                    # download repo that doesn't exist locally
+- git remote add origin git@github.com:ku4marez/ecommerce-medical-platform.git        # attach remote to existing local repo
 - git status                                # check what changed (changed)
 - git switch -c feature/name                # create new feature branch
 - git switch <branch>                       # switch branches
