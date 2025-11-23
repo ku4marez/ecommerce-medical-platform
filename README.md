@@ -170,3 +170,17 @@ Auth and common libs live in separate repos (reused here).
 - sudo apt install pre-commit
 - pre-commit run --all-files
 - pre-commit autoupdate
+
+# redis bitnami cluster
+- helm repo add bitnami https://charts.bitnami.com/bitnami
+- helm install redis bitnami/redis --namespace redis --create-namespace
+
+# java/git/k3d setup for wsl
+- sudo update
+- sudo apt install -y gradle (optional, use wrapper)
+- sudo apt install -y git
+- sudo apt install -y openjdk-21-jdk
+- curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+- curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+- chmod +x kubectl
+- sudo mv kubectl /usr/local/bin/
