@@ -17,6 +17,15 @@ Auth and common libs live in separate repos (reused here).
 - kubectl get deploy -A
 - kubectl get ns
 
+- kubectl delete deployment <name> -n <ns>
+- kubectl delete pod <pod> -n <ns>
+- kubectl delete svc <svc> -n <ns>
+- kubectl delete pvc <pvc> -n <ns>
+
+- kubectl rollout restart deployment/<name> -n <ns>
+- kubectl get <resource> <name> -o yaml
+- kubectl rollout status deployment/<name> -n <ns>
+
 - kubectl create namespace myns
 - kubectl delete namespace myns
 
@@ -50,6 +59,7 @@ Auth and common libs live in separate repos (reused here).
 - git status                                # check what changed (changed)
 - git switch -c feature/name                # create new feature branch
 - git switch <branch>                       # switch branches
+- git merge feature/name                    # merge into curr branch
 - git add -p                                # stage changes interactively
 - git commit -m "msg"                       # commit
 - git fetch                                 # update remote refs
