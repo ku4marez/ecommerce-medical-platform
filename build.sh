@@ -77,6 +77,16 @@ else
   run "helm upgrade redis bitnami/redis -n $REDIS_NS"
 fi
 
+if ! helm status monitoring -n >/dev/null 2>&1; then
+  echo ">>> Metrics not found — installing Prometheus/Grafana"
+  run "helm repo add prometheus-community https://prometheus-community.github.io/helm-charts"
+  run "helm repo update"
+  run "helm install monitoring prometheus-community/kube-prometheus-stack"
+else
+  echo ">>> Redis exists — upgrading"
+  run "helm upgrade monitoring  prometheus-community/kube-prometheus-stack"
+fi
+
 # Deploy via Helm
 for svc in "${SERVICES[@]}"; do
   CHART="${HELM_DIR}/${svc}-service"

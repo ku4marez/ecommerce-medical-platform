@@ -44,6 +44,12 @@ spring:
 server:
   port: ${SERVER_PORT:8080}
 
+logging:
+  level:
+    org.springframework.kafka: INFO
+    org.springframework.data.mongodb: INFO
+    com.github.ku4marez: DEBUG
+
 management:
   endpoints:
     web:
@@ -55,10 +61,4 @@ management:
         enabled: true
   metrics:
     tags:
-      application: ${spring.application.name}
-
-logging:
-  level:
-    org.springframework.kafka: INFO
-    org.springframework.data.mongodb: INFO
-    com.github.ku4marez: DEBUG
+      application: ${spring.application.name:order-service}

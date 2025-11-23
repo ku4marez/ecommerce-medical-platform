@@ -190,6 +190,11 @@ Auth and common libs live in separate repos (reused here).
 - helm repo add bitnami https://charts.bitnami.com/bitnami
 - helm install redis bitnami/redis --namespace redis --create-namespace
 
+# metrics 
+- helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+- helm install monitoring prometheus-community/kube-prometheus-stack
+- admin/BpWD5aPs32X1R1Gg04QjvOPmAqFzscfMLXNI2s5d
+
 # java/git/k3d setup for wsl
 - sudo update
 - sudo apt install -y gradle (optional, use wrapper)
