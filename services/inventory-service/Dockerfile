@@ -8,6 +8,8 @@ ARG GPR_TOKEN
 ENV GPR_USER=$GPR_USER
 ENV GPR_TOKEN=$GPR_TOKEN
 
+ARG CACHE_BUSTER=1
+
 # Gradle wrapper & config
 COPY gradlew .
 COPY gradle gradle

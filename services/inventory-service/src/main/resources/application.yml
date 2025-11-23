@@ -41,10 +41,10 @@ spring:
       group-id: inventory-service
   data:
     mongodb:
-      uri: ${MONGO_URI:mongodb://root:password@localhost:27022/inventory?authSource=admin}
+      uri: ${MONGO_URI:mongodb://root:password@mongo-inventory:27017/inventory?authSource=admin}
 
 server:
-  port: ${SERVER_PORT:8082}
+  port: ${SERVER_PORT:8080}
 
 management:
   endpoints:

@@ -53,10 +53,10 @@ spring:
 
   data:
     mongodb:
-      uri: ${MONGO_URI:mongodb://root:password@localhost:27021/catalog?authSource=admin}
+      uri: ${MONGO_URI:mongodb://root:password@mongo-catalog:27017/catalog?authSource=admin}
 
 server:
-  port: ${SERVER_PORT:8081}
+  port: ${SERVER_PORT:8080}
 
 logging:
   level:
