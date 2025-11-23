@@ -71,6 +71,7 @@ Auth and common libs live in separate repos (reused here).
 - git log --oneline --graph --decorate      # compact commit graph
 - git reflog                                # shows every place HEAD pointed in the past
 - git cherry-pick <commit>                  # apply commit from other branch
+- git cherry-pick --continue                # continue after conflicts
 - git fetch --prune                         # clean up local state branches
 
 # .gitingore handling. Remove tracked files after adding to gitignore
