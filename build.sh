@@ -62,6 +62,21 @@ if [[ -d "$MANIFESTS_DIR" ]]; then
   run "kubectl apply -R -f $MANIFESTS_DIR"
 fi
 
+# Install or upgrade Redis via Helm (Bitnami)
+REDIS_NS="redis"
+
+if ! helm status redis -n "$REDIS_NS" >/dev/null 2>&1; then
+  echo ">>> Redis not found — installing Redis"
+  run "helm repo add bitnami https://charts.bitnami.com/bitnami"
+  run "helm repo update"
+  run "helm install redis bitnami/redis \
+        --namespace $REDIS_NS \
+        --create-namespace"
+else
+  echo ">>> Redis exists — upgrading"
+  run "helm upgrade redis bitnami/redis -n $REDIS_NS"
+fi
+
 # Deploy via Helm
 for svc in "${SERVICES[@]}"; do
   CHART="${HELM_DIR}/${svc}-service"
