@@ -112,17 +112,19 @@ Auth and common libs live in separate repos (reused here).
 # view / edit
 - cat <file>             # print file
 - less <file>            # scroll view
-- head <file>            # first lines
-- tail <file>            # last lines
+- head -n <file>         # first n lines
+- tail -n <file>         # last n lines
 - tail -f <file>         # live log
 - nano <file>            # edit (easy)
 - vim <file>             # edit (advanced)
 - code <file>            # open in VS Code (WSL)
+- sed -i 's/toReplace/replacer/g' <file> # replace string match in file
 
 # search
 - grep "txt" <file>      # search in file
 - grep -R "txt" .        # recursive search
 - grep -n "txt" <file>   # with line numbers
+- grep -c "txt" <file>   # count how many times found
 
 # find
 - find . -name "*.yml"   # find by name
@@ -131,8 +133,10 @@ Auth and common libs live in separate repos (reused here).
 
 # permissions
 - chmod +x file.sh       # make executable
+- chmod 700 file         # make accessible to me
 - chmod 644 file         # rw-r--r--
 - chmod 755 file         # rwxr-xr-x
+- chown -R <user> <file  # change ownership             
 
 # processes
 - ps aux                 # list processes
@@ -140,12 +144,15 @@ Auth and common libs live in separate repos (reused here).
 - htop                   # better top
 - kill <pid>             # kill process
 - kill -9 <pid>          # force kill
+- ss -ltnp               # show network connections
+- lsof -i :port          # check what process is using port
 
 # networking
 - curl <url>             # fetch
 - wget <url>             # download
 - ping google.com        # test network
 - netstat -tulpn         # ports
+- nslookup google.com    # check dns resolution
 
 # system info
 - uname -a               # system info
