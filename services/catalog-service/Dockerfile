@@ -19,7 +19,7 @@ COPY gradle.properties .
 
 COPY platform ./platform
 COPY starters ./starters
-COPY services/catalog-service ./services/catalog-service
+COPY ./services/catalog-service ./services/catalog-service
 
 RUN ./gradlew :services:catalog-service:bootJar --no-daemon --stacktrace
 

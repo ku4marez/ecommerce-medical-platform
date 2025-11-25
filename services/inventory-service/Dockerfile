@@ -19,7 +19,7 @@ COPY gradle.properties .
 
 COPY platform ./platform
 COPY starters ./starters
-COPY services/inventory-service ./services/inventory-service
+COPY ./services/inventory-service ./services/inventory-service
 
 RUN ./gradlew :services:inventory-service:bootJar --no-daemon --stacktrace
 

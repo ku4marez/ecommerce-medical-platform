@@ -19,7 +19,7 @@ COPY gradle.properties .
 
 COPY platform ./platform
 COPY starters ./starters
-COPY services/payment-service ./services/payment-service
+COPY ./services/payment-service ./services/payment-service
 
 RUN ./gradlew :services:payment-service:bootJar --no-daemon --stacktrace
 

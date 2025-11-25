@@ -19,7 +19,7 @@ COPY gradle.properties .
 
 COPY platform ./platform
 COPY starters ./starters
-COPY services/gateway-service ./services/gateway-service
+COPY ./services/gateway-service ./services/gateway-service
 
 RUN ./gradlew :services:gateway-service:bootJar --no-daemon --stacktrace
 

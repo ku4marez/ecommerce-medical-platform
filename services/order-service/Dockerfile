@@ -19,7 +19,7 @@ COPY gradle.properties .
 
 COPY platform ./platform
 COPY starters ./starters
-COPY services/order-service ./services/order-service
+COPY ./services/order-service ./services/order-service
 
 RUN ./gradlew :services:order-service:bootJar --no-daemon --stacktrace
 
