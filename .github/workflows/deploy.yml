@@ -1,0 +1,53 @@
+name: Deploy to Kubernetes
+
+on:
+  workflow_dispatch: {}
+#  workflow_run:
+#    workflows: ["Build & Push Images"]
+#    types:
+#      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: image-tags
+          path: ./deploy
+
+      - name: Load tags
+        run: source ./deploy/image-tags.txt
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > ~/.kube/config
+
+      - name: Deploy catalog-service
+        run: |
+          kubectl set image deployment/catalog-service catalog-container=$CATALOG_IMAGE
+          kubectl rollout status deployment/catalog-service
+
+      - name: Deploy order-service
+        run: |
+          kubectl set image deployment/order-service order-container=$ORDER_IMAGE
+          kubectl rollout status deployment/order-service
+
+      - name: Deploy gateway-service
+        run: |
+          kubectl set image deployment/gateway-service gateway-container=$GATEWAY_IMAGE
+          kubectl rollout status deployment/gateway-service
+
+      - name: Deploy inventory-service
+        run: |
+          kubectl set image deployment/inventory-service inventory-container=$INVENTORY_IMAGE
+          kubectl rollout status deployment/inventory-service
+
+      - name: Deploy payment-service
+        run: |
+          kubectl set image deployment/payment-service payment-container=$PAYMENT_IMAGE
+          kubectl rollout status deployment/payment-service

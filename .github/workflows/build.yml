@@ -32,6 +32,58 @@ jobs:
           GPR_USER: ${{ secrets.GPR_USER }}
           GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
 
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build & push catalog-service
+        run: |
+          IMAGE="ghcr.io/${{ github.repository_owner }}/catalog-service:${{ github.sha }}"
+          docker build -t "$IMAGE" ./services/catalog-service
+          docker push "$IMAGE"
+        if: always()
+
+      - name: Build & push order-service
+        run: |
+          IMAGE="ghcr.io/${{ github.repository_owner }}/order-service:${{ github.sha }}"
+          docker build -t "$IMAGE" ./services/order-service
+          docker push "$IMAGE"
+        if: always()
+
+      - name: Build & push gateway-service
+        run: |
+          IMAGE="ghcr.io/${{ github.repository_owner }}/gateway-service:${{ github.sha }}"
+          docker build -t "$IMAGE" ./services/gateway-service
+          docker push "$IMAGE"
+        if: always()
+
+      - name: Build & push inventory-service
+        run: |
+          IMAGE="ghcr.io/${{ github.repository_owner }}/inventory-service:${{ github.sha }}"
+          docker build -t "$IMAGE" ./services/inventory-service
+          docker push "$IMAGE"
+        if: always()
+
+      - name: Build & push payment-service
+        run: |
+          IMAGE="ghcr.io/${{ github.repository_owner }}/payment-service:${{ github.sha }}"
+          docker build -t "$IMAGE" ./services/payment-service
+          docker push "$IMAGE"
+        if: always()
+
+      - name: Save image tags for deploy step
+        run: |
+          echo "CATALOG_IMAGE=ghcr.io/${{ github.repository_owner }}/catalog-service:${{ github.sha }}" >> image-tags.txt
+          echo "ORDER_IMAGE=ghcr.io/${{ github.repository_owner }}/order-service:${{ github.sha }}" >> image-tags.txt
+          echo "GATEWAY_IMAGE=ghcr.io/${{ github.repository_owner }}/gateway-service:${{ github.sha }}" >> image-tags.txt
+          echo "INVENTORY_IMAGE=ghcr.io/${{ github.repository_owner }}/inventory-service:${{ github.sha }}" >> image-tags.txt
+          echo "PAYMENT_IMAGE=ghcr.io/${{ github.repository_owner }}/payment-service:${{ github.sha }}" >> image-tags.txt
+        shell: bash
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: image-tags
+          path: image-tags.txt
+
 #      - name: Upload catalog-service JAR
 #        if: always()
 #        uses: actions/upload-artifact@v4
