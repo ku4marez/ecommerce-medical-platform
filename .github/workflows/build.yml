@@ -19,7 +19,7 @@ jobs:
           java-version: '21'
           cache: gradle
 
-      - uses: gradle/actions/setup-gradle@v4
+#      - uses: gradle/actions/setup-gradle@v4
 
       - name: Set up GitHub Packages credentials
         run: |
@@ -32,31 +32,30 @@ jobs:
           GPR_USER: ${{ secrets.GPR_USER }}
           GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
 
-      # Upload service jars (adjust names if your modules differ)
-      - name: Upload catalog-service JAR
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: catalog-service-jar
-          path: services/catalog-service/build/libs/*.jar
-
-      - name: Upload inventory-service JAR
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: inventory-service-jar
-          path: services/inventory-service/build/libs/*.jar
-
-      - name: Upload order-service JAR
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: order-service-jar
-          path: services/order-service/build/libs/*.jar
-
-      - name: Upload payment-service JAR
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: payment-service-jar
-          path: services/payment-service/build/libs/*.jar
+#      - name: Upload catalog-service JAR
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: catalog-service-jar
+#          path: services/catalog-service/build/libs/*.jar
+#
+#      - name: Upload inventory-service JAR
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: inventory-service-jar
+#          path: services/inventory-service/build/libs/*.jar
+#
+#      - name: Upload order-service JAR
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: order-service-jar
+#          path: services/order-service/build/libs/*.jar
+#
+#      - name: Upload payment-service JAR
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: payment-service-jar
+#          path: services/payment-service/build/libs/*.jar
