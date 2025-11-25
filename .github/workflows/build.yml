@@ -38,35 +38,35 @@ jobs:
       - name: Build & push catalog-service
         run: |
           IMAGE="ghcr.io/${{ github.repository_owner }}/catalog-service:${{ github.sha }}"
-          docker build -t "$IMAGE" ./services/catalog-service
+          docker build -t "$IMAGE" -f ./services/catalog-service/Dockerfile .
           docker push "$IMAGE"
         if: always()
 
       - name: Build & push order-service
         run: |
           IMAGE="ghcr.io/${{ github.repository_owner }}/order-service:${{ github.sha }}"
-          docker build -t "$IMAGE" ./services/order-service
+          docker build -t "$IMAGE" -f ./services/order-service/Dockerfile .
           docker push "$IMAGE"
         if: always()
 
       - name: Build & push gateway-service
         run: |
           IMAGE="ghcr.io/${{ github.repository_owner }}/gateway-service:${{ github.sha }}"
-          docker build -t "$IMAGE" ./services/gateway-service
+          docker build -t "$IMAGE" -f ./services/gateway-service/Dockerfile .
           docker push "$IMAGE"
         if: always()
 
       - name: Build & push inventory-service
         run: |
           IMAGE="ghcr.io/${{ github.repository_owner }}/inventory-service:${{ github.sha }}"
-          docker build -t "$IMAGE" ./services/inventory-service
+          docker build -t "$IMAGE" -f ./services/inventory-service/Dockerfile .
           docker push "$IMAGE"
         if: always()
 
       - name: Build & push payment-service
         run: |
           IMAGE="ghcr.io/${{ github.repository_owner }}/payment-service:${{ github.sha }}"
-          docker build -t "$IMAGE" ./services/payment-service
+          docker build -t "$IMAGE" -f ./services/payment-service/Dockerfile .
           docker push "$IMAGE"
         if: always()
 
