@@ -37,6 +37,7 @@ Auth and common libs live in separate repos (reused here).
 - kubectl logs <pod> -n <ns> -f
 - kubectl describe pod <pod> -n <ns>
 - kubectl exec -it <pod> -n <ns> -- bash
+- kubectl set image deployment/x container=y:image
 
 - kubectl get events -A --sort-by=.metadata.creationTimestamp
 
