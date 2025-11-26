@@ -32,51 +32,56 @@ jobs:
           GPR_USER: ${{ secrets.GPR_USER }}
           GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
 
-      - name: Login to GHCR
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Login to Docker hub
+        run: docker login -u "${{ secrets.DOCKER_USER }}" -p "${{ secrets.DOCKER_PASSWORD }}"
 
       - name: Build & push catalog-service
         run: |
-          IMAGE="ghcr.io/${{ github.repository_owner }}/catalog-service:${{ github.sha }}"
+          SVC="catalog"
+          IMAGE="ku4marez/myrepo:${SVC}-${{ github.sha }}"
           docker build -t "$IMAGE" -f ./services/catalog-service/Dockerfile --build-arg GPR_USER=${{ secrets.GPR_USER }} --build-arg GPR_TOKEN=${{ secrets.GPR_TOKEN }} .
           docker push "$IMAGE"
         if: always()
 
       - name: Build & push order-service
         run: |
-          IMAGE="ghcr.io/${{ github.repository_owner }}/order-service:${{ github.sha }}"
+          SVC="order"
+          IMAGE="ku4marez/myrepo:${SVC}-${{ github.sha }}"
           docker build -t "$IMAGE" -f ./services/order-service/Dockerfile --build-arg GPR_USER=${{ secrets.GPR_USER }} --build-arg GPR_TOKEN=${{ secrets.GPR_TOKEN }} .
           docker push "$IMAGE"
         if: always()
 
       - name: Build & push gateway-service
         run: |
-          IMAGE="ghcr.io/${{ github.repository_owner }}/gateway-service:${{ github.sha }}"
+          SVC="gateway"
+          IMAGE="ku4marez/myrepo:${SVC}-${{ github.sha }}"
           docker build -t "$IMAGE" -f ./services/gateway-service/Dockerfile --build-arg GPR_USER=${{ secrets.GPR_USER }} --build-arg GPR_TOKEN=${{ secrets.GPR_TOKEN }} .
           docker push "$IMAGE"
         if: always()
 
       - name: Build & push inventory-service
         run: |
-          IMAGE="ghcr.io/${{ github.repository_owner }}/inventory-service:${{ github.sha }}"
+          SVC="inventory"
+          IMAGE="ku4marez/myrepo:${SVC}-${{ github.sha }}"
           docker build -t "$IMAGE" -f ./services/inventory-service/Dockerfile --build-arg GPR_USER=${{ secrets.GPR_USER }} --build-arg GPR_TOKEN=${{ secrets.GPR_TOKEN }} .
           docker push "$IMAGE"
         if: always()
 
       - name: Build & push payment-service
         run: |
-          IMAGE="ghcr.io/${{ github.repository_owner }}/payment-service:${{ github.sha }}"
+          SVC="payment"
+          IMAGE="ku4marez/myrepo:${SVC}-${{ github.sha }}"
           docker build -t "$IMAGE" -f ./services/payment-service/Dockerfile --build-arg GPR_USER=${{ secrets.GPR_USER }} --build-arg GPR_TOKEN=${{ secrets.GPR_TOKEN }} .
           docker push "$IMAGE"
         if: always()
 
       - name: Save image tags for deploy step
         run: |
-          echo "CATALOG_IMAGE=ghcr.io/${{ github.repository_owner }}/catalog-service:${{ github.sha }}" >> image-tags.txt
-          echo "ORDER_IMAGE=ghcr.io/${{ github.repository_owner }}/order-service:${{ github.sha }}" >> image-tags.txt
-          echo "GATEWAY_IMAGE=ghcr.io/${{ github.repository_owner }}/gateway-service:${{ github.sha }}" >> image-tags.txt
-          echo "INVENTORY_IMAGE=ghcr.io/${{ github.repository_owner }}/inventory-service:${{ github.sha }}" >> image-tags.txt
-          echo "PAYMENT_IMAGE=ghcr.io/${{ github.repository_owner }}/payment-service:${{ github.sha }}" >> image-tags.txt
+          echo "CATALOG_IMAGE=ku4marez/myrepo:catalog-${{ github.sha }}" >> image-tags.txt
+          echo "ORDER_IMAGE=ku4marez/myrepo:order-${{ github.sha }}" >> image-tags.txt
+          echo "GATEWAY_IMAGE=ku4marez/myrepo:gateway-${{ github.sha }}" >> image-tags.txt
+          echo "INVENTORY_IMAGE=ku4marez/myrepo:inventory-${{ github.sha }}" >> image-tags.txt
+          echo "PAYMENT_IMAGE=ku4marez/myrepo:payment-${{ github.sha }}" >> image-tags.txt
         shell: bash
 
       - uses: actions/upload-artifact@v4
