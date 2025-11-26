@@ -5,8 +5,6 @@ WORKDIR /app
 # GitHub Packages credentials
 ARG GPR_USER
 ARG GPR_TOKEN
-ENV GPR_USER=$GPR_USER
-ENV GPR_TOKEN=$GPR_TOKEN
 
 ARG CACHE_BUSTER=1
 
@@ -21,7 +19,7 @@ COPY platform ./platform
 COPY starters ./starters
 COPY ./services/inventory-service ./services/inventory-service
 
-RUN ./gradlew :services:inventory-service:bootJar --no-daemon --stacktrace
+RUN GPR_USER="$GPR_USER" GPR_TOKEN="$GPR_TOKEN" ./gradlew :services:inventory-service:bootJar --no-daemon --stacktrace
 
 # ---------- Stage 2: Run ----------
 FROM eclipse-temurin:21-jre

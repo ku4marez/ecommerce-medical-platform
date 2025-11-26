@@ -19,7 +19,7 @@ COPY platform ./platform
 COPY starters ./starters
 COPY ./services/catalog-service ./services/catalog-service
 
-RUN GPR_USER=$GPR_USER GPR_TOKEN=$GPR_TOKEN ./gradlew :services:catalog-service:bootJar --no-daemon --stacktrace
+RUN GPR_USER="$GPR_USER" GPR_TOKEN="$GPR_TOKEN" ./gradlew :services:catalog-service:bootJar --no-daemon --stacktrace
 
 # ---------- Stage 2: Run ----------
 FROM eclipse-temurin:21-jre
