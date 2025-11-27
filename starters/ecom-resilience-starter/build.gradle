@@ -1,0 +1,17 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    api platform(project(":platform"))
+
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+
+    api("io.github.resilience4j:resilience4j-spring-boot3")
+    api("io.github.resilience4j:resilience4j-ratelimiter")
+    api("io.github.resilience4j:resilience4j-retry")
+    api("io.github.resilience4j:resilience4j-circuitbreaker")
+    api("io.github.resilience4j:resilience4j-timelimiter")
+}
+
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }

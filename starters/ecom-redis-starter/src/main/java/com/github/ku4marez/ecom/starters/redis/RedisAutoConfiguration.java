@@ -23,7 +23,7 @@ import java.time.Duration;
 @AutoConfiguration
 @EnableCaching
 @EnableConfigurationProperties(RedisProperties.class)
-@ConditionalOnProperty(prefix = "app.redis", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "ecom.redis", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class RedisAutoConfiguration {
 
     @Bean

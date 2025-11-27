@@ -19,6 +19,7 @@ includeIfExists("starters/ecom-kafka-starter")
 includeIfExists("starters/ecom-web-starter")
 includeIfExists("starters/ecom-mongo-starter")
 includeIfExists("starters/ecom-redis-starter")
+includeIfExists("starters/ecom-resilience-starter")
 
 // Services
 includeIfExists("services/catalog-service")

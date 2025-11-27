@@ -2,7 +2,7 @@ package com.github.ku4marez.ecom.starters.redis;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "app.redis")
+@ConfigurationProperties(prefix = "ecom.redis")
 public class RedisProperties {
     private String host = "localhost";
     private int port = 6379;

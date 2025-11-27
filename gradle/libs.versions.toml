@@ -5,10 +5,10 @@ spring-boot-starter-web                 = { module = "org.springframework.boot:s
 spring-boot-starter-validation          = { module = "org.springframework.boot:spring-boot-starter-validation" }
 spring-boot-starter-actuator            = { module = "org.springframework.boot:spring-boot-starter-actuator" }
 spring-boot-starter-data-mongodb        = { module = "org.springframework.boot:spring-boot-starter-data-mongodb" }
+spring-boot-starter-aop                 = { module = "org.springframework.boot:spring-boot-starter-aop" }
 spring-kafka                            = { module = "org.springframework.kafka:spring-kafka" }
 spring-boot-starter-security            = { module = "org.springframework.boot:spring-boot-starter-security" }
 spring-boot-starter-cache               = { module = "org.springframework.boot:spring-boot-starter-cache" }
-caffeine                                = { module = "com.github.ben-manes.caffeine:caffeine" }
 spring-boot-starter-data-redis          = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
 resilience4j-spring-boot3               = { module = "io.github.resilience4j:resilience4j-spring-boot3" }
 resilience4j-ratelimiter                = { module = "io.github.resilience4j:resilience4j-ratelimiter" }

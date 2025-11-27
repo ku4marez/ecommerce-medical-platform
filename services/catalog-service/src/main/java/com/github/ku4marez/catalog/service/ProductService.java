@@ -22,7 +22,6 @@ import java.util.Optional;
 import static com.github.ku4marez.catalog.constant.ApplicationConstant.PRODUCT_BY_ID;
 import static com.github.ku4marez.catalog.constant.ApplicationConstant.PRODUCT_BY_SLUG;
 
-
 @Service
 @RequiredArgsConstructor
 public class ProductService {

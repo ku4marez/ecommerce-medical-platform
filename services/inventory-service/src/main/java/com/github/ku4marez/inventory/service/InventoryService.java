@@ -1,5 +1,7 @@
 package com.github.ku4marez.inventory.service;
 
+import com.github.ku4marez.inventory.configuration.Cache;
+import com.github.ku4marez.inventory.configuration.CacheEvict;
 import com.github.ku4marez.inventory.configuration.StockEventsPublisher;
 import com.github.ku4marez.inventory.dto.*;
 import com.github.ku4marez.inventory.entity.ReservationEntity;
@@ -11,9 +13,6 @@ import com.github.ku4marez.inventory.mapper.StockItemMapper;
 import com.github.ku4marez.inventory.repository.ReservationRepository;
 import com.github.ku4marez.inventory.repository.StockItemRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
@@ -28,11 +27,10 @@ import org.springframework.util.StringUtils;
 import java.time.Instant;
 import java.util.NoSuchElementException;
 
-import static com.github.ku4marez.inventory.constant.ApplicationConstant.STOCK_BY_PRODUCT;
+import static com.github.ku4marez.inventory.constant.ApplicationConstant.*;
 
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = STOCK_BY_PRODUCT)
 public class InventoryService {
 
     private final ReservationRepository reservations;
@@ -42,7 +40,7 @@ public class InventoryService {
     private final MongoTemplate mongo;
     private final StockEventsPublisher publisher;
 
-    @Cacheable(key = "#productId")
+    @Cache(prefix = STOCK_BY_PRODUCT, key = "#productId")
     public StockItemResponse getStock(String productId) {
         var si = stock.findByProductId(productId)
             .orElseGet(() -> {
@@ -67,7 +65,7 @@ public class InventoryService {
      * Decrease available, increase reserved, create Reservation.
      */
     @Transactional
-    @CacheEvict(key = "#req.productId")
+    @CacheEvict(prefix = RESERVATION_BY_PRODUCT, key = "#req.productId")
     public ReservationResponse reserve(ReserveRequest req) {
 
         // 1. Idempotency: existing reservation
@@ -115,7 +113,7 @@ public class InventoryService {
      * Release reservation back to stock.
      */
     @Transactional
-    @CacheEvict(key = "#req.productId")
+    @CacheEvict(prefix = RESERVATION_BY_PRODUCT, key = "#req.productId")
     public ReservationResponse release(ReleaseRequest req) {
 
         var r = reservations.findByProductIdAndOrderId(req.productId(), req.orderId())
@@ -162,7 +160,7 @@ public class InventoryService {
     }
 
     @Transactional
-    @CacheEvict(key = "#req.productId")
+    @CacheEvict(prefix = STOCK_BY_PRODUCT, key = "#req.productId")
     public StockItemResponse adjust(AdjustStockRequest req) {
 
         Query q = new Query(Criteria.where("productId").is(req.productId()));

@@ -12,13 +12,6 @@ dependencies {
 	implementation libs.spring.kafka
 	implementation libs.spring.boot.starter.security
 
-	// Resilience
-	implementation libs.resilience4j.spring.boot3
-	implementation libs.resilience4j.ratelimiter
-	implementation libs.resilience4j.circuitbreaker
-	implementation libs.resilience4j.timelimiter
-	implementation libs.resilience4j.retry
-
 	// S3 (MinIO/S3)
 	implementation libs.aws.s3
 

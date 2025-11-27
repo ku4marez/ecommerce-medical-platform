@@ -1,4 +1,19 @@
 ecom:
+  resilience:
+    enabled: true
+    circuit-breaker:
+      failure-rate-threshold: 40
+      wait-duration-in-open-state-seconds: 15
+      sliding-window-size: 50
+    retry:
+      max-attempts: 4
+      wait-duration-ms: 300
+    rate-limiter:
+      limit-for-period: 20
+      limit-refresh-period-seconds: 1
+      timeout-duration-seconds: 2
+    time-limiter:
+      timeout-seconds: 4
   redis:
     enabled: true
     host: redis

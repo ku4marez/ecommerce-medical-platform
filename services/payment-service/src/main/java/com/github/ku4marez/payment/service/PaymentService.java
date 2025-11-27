@@ -3,6 +3,7 @@ package com.github.ku4marez.payment.service;
 import com.github.ku4marez.payment.configuration.PaymentEventsPublisher;
 import com.github.ku4marez.payment.dto.*;
 import com.github.ku4marez.payment.entity.*;
+import com.github.ku4marez.payment.exception.PaymentGatewayFailed;
 import com.github.ku4marez.payment.mapper.PaymentMapper;
 import com.github.ku4marez.payment.repository.PaymentRefundRepository;
 import com.github.ku4marez.payment.repository.PaymentRepository;
@@ -24,6 +25,7 @@ public class PaymentService {
     private final PaymentRefundRepository refunds;
     private final PaymentMapper mapper;
     private final PaymentEventsPublisher publisher;
+    private final PaymentGatewayClient paymentGatewayClient;
 
     // ---------- Queries ----------
     public PaymentResponse get(String id) {
@@ -54,9 +56,19 @@ public class PaymentService {
         p.setProvider(PaymentProvider.STRIPE);
         p.setStatus(PaymentStatus.PENDING);
 
-        // (Later) integrate Stripe and fill providerRef, checkoutUrl
-        var saved = payments.save(p);
-        return mapper.toResponse(saved);
+        try {
+            var external = paymentGatewayClient
+                .createPayment(req.orderId(), req.amount())
+                .get();
+
+            p.setProviderRef(external.providerRef());
+            p.setCheckoutUrl(external.checkoutUrl());
+
+        } catch (Exception e) {
+            throw new PaymentGatewayFailed();
+        }
+
+        return mapper.toResponse(payments.save(p));
     }
 
     /** Webhook handler for Stripe (or another provider). */
