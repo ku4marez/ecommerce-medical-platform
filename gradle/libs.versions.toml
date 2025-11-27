@@ -10,6 +10,7 @@ spring-kafka                            = { module = "org.springframework.kafka:
 spring-boot-starter-security            = { module = "org.springframework.boot:spring-boot-starter-security" }
 spring-boot-starter-cache               = { module = "org.springframework.boot:spring-boot-starter-cache" }
 spring-boot-starter-data-redis          = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
+spring-boot-starter-webflux             = { module = "org.springframework.boot:spring-boot-starter-webflux"}
 resilience4j-spring-boot3               = { module = "io.github.resilience4j:resilience4j-spring-boot3" }
 resilience4j-ratelimiter                = { module = "io.github.resilience4j:resilience4j-ratelimiter" }
 resilience4j-retry                      = { module = "io.github.resilience4j:resilience4j-retry" }

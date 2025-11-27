@@ -11,7 +11,8 @@ dependencies {
 	implementation libs.spring.kafka
 	implementation libs.spring.boot.starter.security
 
-	// Stripe
+    implementation libs.spring.boot.starter.webflux
+    // Stripe
 	implementation libs.stripe
 
 	implementation libs.resilience4j.spring.boot3
