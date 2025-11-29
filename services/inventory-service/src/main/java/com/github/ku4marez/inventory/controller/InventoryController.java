@@ -1,6 +1,6 @@
 package com.github.ku4marez.inventory.controller;
 
-import com.github.ku4marez.inventory.dto.*;
+import com.github.ku4marez.inventory.dto.api.*;
 import com.github.ku4marez.inventory.entity.ReservationStatus;
 import com.github.ku4marez.inventory.service.InventoryService;
 import jakarta.validation.Valid;

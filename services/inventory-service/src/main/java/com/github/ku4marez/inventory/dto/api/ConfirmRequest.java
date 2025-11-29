@@ -1,4 +1,4 @@
-package com.github.ku4marez.inventory.dto;
+package com.github.ku4marez.inventory.dto.api;
 
 import jakarta.validation.constraints.NotBlank;
 

@@ -3,13 +3,14 @@ package com.github.ku4marez.inventory.service;
 import com.github.ku4marez.inventory.configuration.Cache;
 import com.github.ku4marez.inventory.configuration.CacheEvict;
 import com.github.ku4marez.inventory.configuration.StockEventsPublisher;
-import com.github.ku4marez.inventory.dto.*;
+import com.github.ku4marez.inventory.dto.api.*;
 import com.github.ku4marez.inventory.entity.ReservationEntity;
 import com.github.ku4marez.inventory.entity.ReservationStatus;
 import com.github.ku4marez.inventory.entity.StockItemEntity;
 import com.github.ku4marez.inventory.exception.ReservationNotFoundException;
 import com.github.ku4marez.inventory.mapper.ReservationMapper;
 import com.github.ku4marez.inventory.mapper.StockItemMapper;
+import com.github.ku4marez.inventory.mapper.impl.Mappers;
 import com.github.ku4marez.inventory.repository.ReservationRepository;
 import com.github.ku4marez.inventory.repository.StockItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +36,8 @@ public class InventoryService {
 
     private final ReservationRepository reservations;
     private final StockItemRepository stock;
-//    private final ReservationMapper reservationMapper;
-//    private final StockItemMapper stockItemMapper;
+    private final ReservationMapper reservationMapper = Mappers.get(ReservationMapper.class);
+    private final StockItemMapper stockItemMapper = Mappers.get(StockItemMapper.class);
     private final MongoTemplate mongo;
     private final StockEventsPublisher publisher;
 

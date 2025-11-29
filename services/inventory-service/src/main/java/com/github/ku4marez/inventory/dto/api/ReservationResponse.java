@@ -1,4 +1,4 @@
-package com.github.ku4marez.inventory.dto;
+package com.github.ku4marez.inventory.dto.api;
 
 import com.github.ku4marez.inventory.entity.ReservationStatus;
 

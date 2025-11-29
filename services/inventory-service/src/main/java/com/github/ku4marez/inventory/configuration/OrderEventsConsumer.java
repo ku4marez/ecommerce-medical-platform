@@ -1,8 +1,8 @@
 package com.github.ku4marez.inventory.configuration;
 
-import com.github.ku4marez.inventory.dto.ConfirmRequest;
-import com.github.ku4marez.inventory.dto.ReleaseRequest;
-import com.github.ku4marez.inventory.dto.ReserveRequest;
+import com.github.ku4marez.inventory.dto.api.ConfirmRequest;
+import com.github.ku4marez.inventory.dto.api.ReleaseRequest;
+import com.github.ku4marez.inventory.dto.api.ReserveRequest;
 import com.github.ku4marez.inventory.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
