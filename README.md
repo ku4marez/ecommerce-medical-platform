@@ -166,11 +166,6 @@ Auth and common libs live in separate repos (reused here).
 - tar -xzf a.tar.gz      # extract
 - unzip file.zip         # unzip
 
-# package management (Ubuntu/WSL)
-- sudo apt update        # refresh packages
-- sudo apt install pkg   # install
-- sudo apt remove pkg    # remove
-
 # piping & redirects
 - cmd > f                # overwrite file
 - cmd >> f               # append
@@ -212,3 +207,57 @@ Auth and common libs live in separate repos (reused here).
 - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 - chmod +x kubectl
 - sudo mv kubectl /usr/local/bin/
+
+# APT (Debian/Ubuntu) 
+- sudo apt update
+- sudo apt install <pkg>
+# DNF (Fedora/RHEL/CentOS Stream)
+- sudo dnf install <pkg>
+# YUM (legacy RHEL/CentOS)
+- sudo yum install <pkg>`
+# Pacman (Arch Linux)
+- sudo pacman -S <pkg>
+# APK (Alpine)
+- sudo apk add <pkg>
+# Zypper (openSUSE)
+- sudo zypper install <pkg>
+
+# Homebrew (macOS)
+- brew install <pkg>
+# MacPorts** (macOS)
+- sudo port install <pkg>
+
+# Winget (Windows)
+- winget install <pkg>
+# Chocolatey (Windows)
+- choco install <pkg>
+# Scoop (Windows)
+- scoop install <pkg>
+
+## Gradle
+- Build project  
+  `./gradlew build`
+- Run tests  
+  `./gradlew test`
+- Clean build directory  
+  `./gradlew clean`
+- Run Spring Boot application  
+  `./gradlew bootRun`
+- Build Docker image (if using Jib)  
+  `./gradlew jibDockerBuild`
+- List tasks  
+  `./gradlew tasks`
+
+## Maven
+- Build project  
+  `mvn clean package`
+- Run tests  
+  `mvn test`
+- Clean build  
+  `mvn clean`
+- Run Spring Boot application  
+  `mvn spring-boot:run`
+- Skip tests build  
+  `mvn clean package -DskipTests`
+- Install artifact to local repo  
+  `mvn install`
