@@ -35,8 +35,8 @@ public class InventoryService {
 
     private final ReservationRepository reservations;
     private final StockItemRepository stock;
-    private final ReservationMapper reservationMapper;
-    private final StockItemMapper stockItemMapper;
+//    private final ReservationMapper reservationMapper;
+//    private final StockItemMapper stockItemMapper;
     private final MongoTemplate mongo;
     private final StockEventsPublisher publisher;
 
