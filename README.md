@@ -128,9 +128,9 @@ Auth and common libs live in separate repos (reused here).
 - grep -c "txt" <file>   # count how many times found
 
 # find
-- find . -name "*.yml"   # find by name
+- find . -name "*.yml"     # find by name
 - find . -type f -name "x" # find files
-- find . -name "*Zone*"  # match by pattern
+- find . -name "*Zone*"    # match by pattern
 
 # permissions
 - chmod +x file.sh       # make executable
@@ -199,7 +199,7 @@ Auth and common libs live in separate repos (reused here).
 - admin/BpWD5aPs32X1R1Gg04QjvOPmAqFzscfMLXNI2s5d
 
 # java/git/k3d setup for wsl
-- sudo update
+- sudo apt update
 - sudo apt install -y gradle (optional, use wrapper)
 - sudo apt install -y git
 - sudo apt install -y openjdk-21-jdk
@@ -221,12 +221,10 @@ Auth and common libs live in separate repos (reused here).
 - sudo apk add <pkg>
 # Zypper (openSUSE)
 - sudo zypper install <pkg>
-
 # Homebrew (macOS)
 - brew install <pkg>
 # MacPorts** (macOS)
 - sudo port install <pkg>
-
 # Winget (Windows)
 - winget install <pkg>
 # Chocolatey (Windows)
@@ -235,29 +233,71 @@ Auth and common libs live in separate repos (reused here).
 - scoop install <pkg>
 
 ## Gradle
-- Build project  
-  `./gradlew build`
-- Run tests  
-  `./gradlew test`
-- Clean build directory  
-  `./gradlew clean`
-- Run Spring Boot application  
-  `./gradlew bootRun`
-- Build Docker image (if using Jib)  
-  `./gradlew jibDockerBuild`
-- List tasks  
-  `./gradlew tasks`
+- ./gradlew build                    # Build project
+- ./gradlew test                     # Run tests
+- ./gradlew clean                    # Clean build directory
+- ./gradlew bootRun                  # Run Spring Boot application
+- ./gradlew jibDockerBuild           # Build Docker image (if using Jib)
+- ./gradlew tasks                    # List tasks
 
 ## Maven
-- Build project  
-  `mvn clean package`
-- Run tests  
-  `mvn test`
-- Clean build  
-  `mvn clean`
-- Run Spring Boot application  
-  `mvn spring-boot:run`
-- Skip tests build  
-  `mvn clean package -DskipTests`
-- Install artifact to local repo  
-  `mvn install`
+- ./mvnw clean package               # Build project
+- ./mvnw test                        # Run tests
+- ./mvnw clean                       # Clean build directory
+- ./mvnw spring-boot:run             # Run Spring Boot application
+- ./mvnw clean package -DskipTests`  # Skip tests build
+- ./mvnw install                     # Install artifact to local repo
+
+# Docker basics
+- docker version                # show Docker version info
+- docker info                   # system-wide info
+- docker ps                     # running containers
+- docker ps -a                  # all containers
+- docker images                 # list local images
+- docker pull <image>           # download image
+- docker search <name>          # search image on Docker Hub
+
+# Running containers
+- docker run <image>            # run in foreground
+- docker run -d <image>         # run detached
+- docker run -it <image> bash   # interactive shell
+- docker run -p 8080:80 <img>   # port mapping
+- docker run -e KEY=VAL <img>   # env vars
+
+# Container management
+- docker stop <id>              # stop container
+- docker start <id>             # start container
+- docker restart <id>           # restart
+- docker kill <id>              # force kill
+- docker rm <id>                # remove container
+- docker rm -f <id>             # remove running container
+- docker prune                  # clean unused objects
+
+# Logs / exec
+- docker logs <id>              # show logs
+- docker logs -f <id>           # follow logs
+- docker exec -it <id> bash     # enter running container
+
+# Images
+- docker build -t name:tag .    # build image
+- docker tag src:tag dest:tag   # re-tag image
+- docker rmi <image>            # remove image
+- docker rmi -f <image>         # force remove
+- docker history <image>        # show layers
+
+# Volumes
+- docker volume ls              # list volumes
+- docker volume inspect <vol>   # inspect volume
+- docker volume rm <vol>        # remove volume
+
+# Networks
+- docker network ls             # list networks
+- docker network inspect <net>  # inspect
+- docker network rm <net>       # delete
+
+# Compose (if using docker-compose)
+- docker compose up -d          # start services
+- docker compose down           # stop + remove
+- docker compose logs -f        # watch logs
+- docker compose ps             # status
+- docker compose build          # rebuild
