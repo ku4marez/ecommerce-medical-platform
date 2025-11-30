@@ -10,47 +10,61 @@ Auth and common libs live in separate repos (reused here).
 - **Storage:** MinIO (local) / S3-compatible
 
 # Kubernetes basics
-- kubectl cluster-info
-- kubectl get nodes
-- kubectl get pods -A
-- kubectl get svc -A
-- kubectl get deploy -A
-- kubectl get ns
+- kubectl cluster-info                                         # show cluster endpoints
+- kubectl get nodes                                            # list nodes
+- kubectl get pods -A                                          # list all pods
+- kubectl get svc -A                                           # list all services
+- kubectl get deploy -A                                        # list all deployments
+- kubectl get ns                                               # list namespaces
 
-- kubectl delete deployment <name> -n <ns>
-- kubectl delete pod <pod> -n <ns>
-- kubectl delete svc <svc> -n <ns>
-- kubectl delete pvc <pvc> -n <ns>
+# Delete resources
+- kubectl delete deployment <name> -n <ns>                     # delete deployment
+- kubectl delete pod <pod> -n <ns>                             # delete pod
+- kubectl delete svc <svc> -n <ns>                             # delete service
+- kubectl delete pvc <pvc> -n <ns>                             # delete persistent volume claim
 
-- kubectl rollout restart deployment/<name> -n <ns>
-- kubectl get <resource> <name> -o yaml
-- kubectl rollout status deployment/<name> -n <ns>
+# Rollouts / inspection
+- kubectl rollout restart deployment/<name> -n <ns>            # restart deployment
+- kubectl get <resource> <name> -o yaml                        # view resource YAML
+- kubectl rollout status deployment/<name> -n <ns>             # wait for rollout to finish
 
-- kubectl create namespace myns
-- kubectl delete namespace myns
+# Namespaces
+- kubectl create namespace myns                                # create namespace
+- kubectl delete namespace myns                                # delete namespace
 
-- kubectl apply -f file.yaml
-- kubectl apply -R -f infra/k8s
-- kubectl delete -f file.yaml
+# Apply / remove manifests
+- kubectl apply -f file.yaml                                   # apply manifest
+- kubectl apply -R -f infra/k8s                                # apply directory recursively
+- kubectl delete -f file.yaml                                  # delete via manifest
 
-- kubectl logs <pod> -n <ns>
-- kubectl logs <pod> -n <ns> -f
-- kubectl describe pod <pod> -n <ns>
-- kubectl exec -it <pod> -n <ns> -- bash
-- kubectl set image deployment/x container=y:image
+# Logs / exec / describe
+- kubectl logs <pod> -n <ns>                                   # show logs
+- kubectl logs <pod> -n <ns> -f                                # follow logs
+- kubectl describe pod <pod> -n <ns>                           # describe pod details
+- kubectl exec -it <pod> -n <ns> -- bash                       # open shell inside pod
+- kubectl set image deployment/x container=y:image             # update deployment image
 
-- kubectl get events -A --sort-by=.metadata.creationTimestamp
+# Debug / metrics
+- kubectl get events -A --sort-by=.metadata.creationTimestamp  # list events (chronological)
+- kubectl top pods -n <ns>                                     # pod cpu/mem usage
+- kubectl top nodes                                            # node cpu/mem usage
+- kubectl explain <resource>                                   # show resource schema
+- kubectl describe node <node>                                 # node info / issues
 
-- helm upgrade --install app chart/
-- helm uninstall app
-- helm list -A
+# Helm
+- helm upgrade --install app chart/                            # install or upgrade release
+- helm uninstall app                                            # uninstall release
+- helm list -A                                                  # list all releases
 
-- k3d cluster create dev --servers 1 --agents 2 --port 8080:80@loadbalancer
-- k3d cluster delete dev
-- k3d cluster list
-- k3d cluster start dev
-- k3d cluster stop dev
-- kubectl port-forward svc/my-service 8081:80 -n default
+# k3d local cluster
+- k3d cluster create dev --servers 1 --agents 2 --port 8080:80@loadbalancer   # create k3d cluster
+- k3d cluster delete dev                                         # delete cluster
+- k3d cluster list                                               # list clusters
+- k3d cluster start dev                                          # start cluster
+- k3d cluster stop dev                                           # stop cluster
+
+# Networking / forwarding
+- kubectl port-forward svc/my-service 8081:80 -n default         # forward local port to service
 
 # Run build script (git bash)
 - chmod +x build.sh
@@ -301,3 +315,105 @@ Auth and common libs live in separate repos (reused here).
 - docker compose logs -f        # watch logs
 - docker compose ps             # status
 - docker compose build          # rebuild
+
+# AWS Configure / Profiles
+- aws configure                                                # set default profile
+- aws configure --profile dev                                  # create/use "dev" profile
+- aws sts get-caller-identity                                  # show current IAM identity
+- aws configure list                                           # show loaded credentials
+
+# EC2
+- aws ec2 describe-instances                                   # list all EC2 instances
+- aws ec2 describe-instance-status --instance-id <id>          # instance status
+- aws ec2 start-instances --instance-ids <id>                  # start instance
+- aws ec2 stop-instances --instance-ids <id>                   # stop instance
+- aws ec2 reboot-instances --instance-ids <id>                 # reboot instance
+- aws ec2 terminate-instances --instance-ids <id>              # delete instance
+- aws ec2 describe-security-groups                             # list security groups
+- aws ec2 describe-vpcs                                        # list VPCs
+- aws ec2 describe-subnets                                     # list subnets
+
+# S3 (Storage)
+- aws s3 ls                                                    # list buckets
+- aws s3 ls s3://bucket                                        # list objects in bucket
+- aws s3 cp file.txt s3://bucket/dir/                          # upload file
+- aws s3 cp s3://bucket/file.txt .                             # download file
+- aws s3 sync ./localdir s3://bucket/dir/                      # sync directory
+- aws s3 rm s3://bucket/file.txt                               # delete object
+
+# CloudWatch Logs
+- aws logs describe-log-groups                                  # list log groups
+- aws logs describe-log-streams --log-group-name <name>         # list streams
+- aws logs tail <log-group> --follow                            # tail logs (follow mode)
+
+# ECS (Containers)
+- aws ecs list-clusters                                         # list ECS clusters
+- aws ecs list-services --cluster <cluster>                     # list services
+- aws ecs describe-services --cluster <c> --services <s>        # describe service
+- aws ecs list-tasks --cluster <c> --service-name <s>           # list tasks
+- aws ecs describe-tasks --cluster <c> --tasks <id>             # task details 
+- aws ecs update-service --cluster <c> --service <s> --force-new-deployment # restart service
+
+# ECR (Container Registry)
+- aws ecr get-login-password | docker login --username AWS --password-stdin <registry> # login to ECR
+- aws ecr create-repository --repository-name <repo>            # create repo
+- aws ecr describe-repositories                                 # list repos
+- aws ecr list-images --repository-name <repo>                  # list images
+
+# Lambda
+- aws lambda list-functions                                     # list functions
+- aws lambda invoke --function-name <name> out.json             # run lambda
+- aws lambda update-function-code --function-name <name> --zip-file fileb://build.zip # update code
+- aws lambda get-function --function-name <name>                # details
+
+# DynamoDB
+- aws dynamodb list-tables                                      # list tables
+- aws dynamodb scan --table-name <table>                        # full scan
+- aws dynamodb query --table-name <t> --key-condition-expression "<expr>" --expression-attribute-values <json> # query
+
+# RDS
+- aws rds describe-db-instances                                 # list DB instances
+- aws rds describe-db-clusters                                  # list clusters
+- aws rds reboot-db-instance --db-instance-identifier <id>      # restart instance
+
+# SSM Parameter Store
+- aws ssm get-parameter --name <path> --with-decryption         # read secret
+- aws ssm put-parameter --name <path> --value <val> --type SecureString --overwrite # write secret
+- aws ssm delete-parameter --name <path>                        # delete secret
+
+# Secrets Manager
+- aws secretsmanager list-secrets                               # list secrets
+- aws secretsmanager get-secret-value --secret-id <id>          # read secret
+- aws secretsmanager put-secret-value --secret-id <id> --secret-string <json> # write secret value
+
+# SQS
+- aws sqs list-queues                                           # list queues
+- aws sqs receive-message --queue-url <url>                     # read messages
+- aws sqs send-message --queue-url <url> --message-body "Hi"    # send
+- aws sqs delete-message --queue-url <url> --receipt-handle <h> # delete
+
+# SNS
+- aws sns list-topics # list topics
+- aws sns publish --topic-arn <arn> --message "Hello"           # publish message
+
+# IAM
+- aws iam get-user                                              # current IAM user
+- aws iam list-roles                                            # roles
+- aws iam list-users                                            # users
+- aws iam list-policies                                         # policies
+
+# CloudFormation
+- aws cloudformation list-stacks                                # list stacks
+- aws cloudformation describe-stacks --stack-name <name>        # details
+- aws cloudformation delete-stack --stack-name <name>           # delete stack
+
+# CodePipeline / CodeBuild
+- aws codepipeline list-pipelines                               # list pipelines
+- aws codepipeline start-pipeline-execution --name <name>       # trigger pipeline
+- aws codepipeline get-pipeline-state --name <name>             # pipeline status
+
+# STS (Temp Credentials)
+- aws sts assume-role --role-arn <arn> --role-session-name session1 # assume role
+
+# Regions
+- aws ec2 describe-regions                                      # list AWS regions
