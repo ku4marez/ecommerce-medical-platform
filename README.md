@@ -53,18 +53,18 @@ Auth and common libs live in separate repos (reused here).
 
 # Helm
 - helm upgrade --install app chart/                            # install or upgrade release
-- helm uninstall app                                            # uninstall release
-- helm list -A                                                  # list all releases
+- helm uninstall app                                           # uninstall release
+- helm list -A                                                 # list all releases
 
 # k3d local cluster
 - k3d cluster create dev --servers 1 --agents 2 --port 8080:80@loadbalancer   # create k3d cluster
-- k3d cluster delete dev                                         # delete cluster
-- k3d cluster list                                               # list clusters
-- k3d cluster start dev                                          # start cluster
-- k3d cluster stop dev                                           # stop cluster
+- k3d cluster delete dev                                       # delete cluster
+- k3d cluster list                                             # list clusters
+- k3d cluster start dev                                        # start cluster
+- k3d cluster stop dev                                         # stop cluster
 
 # Networking / forwarding
-- kubectl port-forward svc/my-service 8081:80 -n default         # forward local port to service
+- kubectl port-forward svc/my-service 8081:80 -n default       # forward local port to service
 
 # Run build script (git bash)
 - chmod +x build.sh
@@ -222,29 +222,20 @@ Auth and common libs live in separate repos (reused here).
 - chmod +x kubectl
 - sudo mv kubectl /usr/local/bin/
 
-# APT (Debian/Ubuntu) 
-- sudo apt update
-- sudo apt install <pkg>
-# DNF (Fedora/RHEL/CentOS Stream)
-- sudo dnf install <pkg>
-# YUM (legacy RHEL/CentOS)
-- sudo yum install <pkg>`
-# Pacman (Arch Linux)
-- sudo pacman -S <pkg>
-# APK (Alpine)
-- sudo apk add <pkg>
-# Zypper (openSUSE)
-- sudo zypper install <pkg>
-# Homebrew (macOS)
-- brew install <pkg>
-# MacPorts** (macOS)
-- sudo port install <pkg>
-# Winget (Windows)
-- winget install <pkg>
-# Chocolatey (Windows)
-- choco install <pkg>
-# Scoop (Windows)
-- scoop install <pkg>
+# WSL install AWS CLI, Helm, kubectl, k3d, Java 21, git
+- sudo apt update && sudo apt upgrade -y
+- sudo apt install -y git
+- sudo apt install -y openjdk-21-jdk
+- curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+- curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+- chmod +x kubectl
+- sudo mv kubectl /usr/local/bin/
+- curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+- curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+- sudo apt install -y unzip
+- unzip awscliv2.zip
+- sudo ./aws/install
+- rm -rf aws awscliv2.zip
 
 ## Gradle
 - ./gradlew build                    # Build project
@@ -401,6 +392,11 @@ Auth and common libs live in separate repos (reused here).
 - aws iam list-roles                                            # roles
 - aws iam list-users                                            # users
 - aws iam list-policies                                         # policies
+
+# SSO
+- aws configure sso                                             # configure SSO profile
+- aws sso login --profile cts-dev                               # login to SSO
+- aws sts get-caller-identity --profile cts-dev                 # verify SSO identity
 
 # CloudFormation
 - aws cloudformation list-stacks                                # list stacks
