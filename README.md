@@ -1,12 +1,12 @@
-# Ecommerce Monorepo (Spring Boot 3 + Java 21 + K8s)
+# Ecommerce Monorepo (Spring Boot 3 + Java 21 + Kubernetes/Helm)
 
 Microservice demo: **catalog**, **order**, **payment**, **inventory**.  
 Auth and common libs live in separate repos (reused here).
 
 ## Stack
-- **Backend:** Spring Boot 3.5.x, Java 21, MongoDB, Kafka, Redis cache, Resilience
-- **Infra:** Docker, Helm, k3s on VPS, NGINX Ingress, cert-manager
-- **CI/CD:** GitHub Actions → GHCR → Helm deploy
+- **Backend:** Spring Boot 3.5.x, Java 21, MongoDB, Kafka, Redis cache, Resilience, API Gateway
+- **Infra:** Docker, Helm, k3d locally on top of WSL
+- **CI/CD:** GitHub Actions → Docker hub
 - **Storage:** MinIO (local) / S3-compatible
 
 # Kubernetes basics
@@ -123,6 +123,7 @@ Auth and common libs live in separate repos (reused here).
 - rm <file>              # delete file
 - rm -r <dir>            # delete directory
 - rm -rf <dir>           # delete w/o prompts
+- ln -s <src> <dst>      # create symbolink links between 2 files (use absolute path, -f file <dst> exists otherwise error)
 
 # view / edit
 - cat <file>             # print file
@@ -211,16 +212,6 @@ Auth and common libs live in separate repos (reused here).
 - helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 - helm install monitoring prometheus-community/kube-prometheus-stack
 - admin/BpWD5aPs32X1R1Gg04QjvOPmAqFzscfMLXNI2s5d
-
-# java/git/k3d setup for wsl
-- sudo apt update
-- sudo apt install -y gradle (optional, use wrapper)
-- sudo apt install -y git
-- sudo apt install -y openjdk-21-jdk
-- curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-- curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-- chmod +x kubectl
-- sudo mv kubectl /usr/local/bin/
 
 # WSL install AWS CLI, Helm, kubectl, k3d, Java 21, git
 - sudo apt update && sudo apt upgrade -y
