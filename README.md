@@ -331,12 +331,12 @@ Auth and common libs live in separate repos (reused here).
 - aws logs tail <log-group> --follow                            # tail logs (follow mode)
 
 # ECS (Containers)
-- aws ecs list-clusters                                         # list ECS clusters
-- aws ecs list-services --cluster <cluster>                     # list services
-- aws ecs describe-services --cluster <cluster> --services <service>        # describe service
-- aws ecs list-tasks --cluster <c> --service-name <s>           # list tasks
-- aws ecs describe-tasks --cluster <c> --tasks <id>             # task details 
-- aws ecs update-service --cluster <c> --service <s> --force-new-deployment # restart service
+- aws ecs list-clusters                                               # list ECS clusters
+- aws ecs list-services --cluster <cluster>                           # list services
+- aws ecs describe-services --cluster <cluster> --services <service>  # describe service
+- aws ecs list-tasks --cluster <cluster> --service-name <service>     # list tasks
+- aws ecs describe-tasks --cluster <cluster> --tasks <task-id>        # task details
+- aws ecs update-service --cluster <cluster> --service <service> --force-new-deployment # restart service
 
 # ECR (Container Registry)
 - aws ecr get-login-password | docker login --username AWS --password-stdin <registry> # login to ECR
@@ -353,7 +353,7 @@ Auth and common libs live in separate repos (reused here).
 # DynamoDB
 - aws dynamodb list-tables                                      # list tables
 - aws dynamodb scan --table-name <table>                        # full scan
-- aws dynamodb query --table-name <t> --key-condition-expression "<expr>" --expression-attribute-values <json> # query
+- aws dynamodb query --table-name <table> --key-condition-expression "<expr>" --expression-attribute-values <json> # query
 
 # RDS
 - aws rds describe-db-instances                                 # list DB instances
@@ -374,10 +374,10 @@ Auth and common libs live in separate repos (reused here).
 - aws sqs list-queues                                           # list queues
 - aws sqs receive-message --queue-url <url>                     # read messages
 - aws sqs send-message --queue-url <url> --message-body "Hi"    # send
-- aws sqs delete-message --queue-url <url> --receipt-handle <h> # delete
+- aws sqs delete-message --queue-url <url> --receipt-handle <handle> # delete
 
 # SNS
-- aws sns list-topics # list topics
+- aws sns list-topics                                           # list topics
 - aws sns publish --topic-arn <arn> --message "Hello"           # publish message
 
 # IAM
@@ -410,5 +410,5 @@ Auth and common libs live in separate repos (reused here).
 # EKS (Kubernetes)
 - aws eks list-clusters --region <region>                       # list EKS clusters
 - aws eks describe-cluster --name <cluster> --region <region>   # cluster details
-- aws eks update-kubeconfig --name <cluster> --region <region> --profile <profile>   # add cluster to kubectl
-- aws eks update-kubeconfig --name <cluster> --region <region> --alias <alias>       # add with custom context name
+- aws eks update-kubeconfig --name <cluster> --region <region> --profile <profile> # add cluster to kubectl
+- aws eks update-kubeconfig --name <cluster> --region <region> --alias <alias> # add with custom context name
