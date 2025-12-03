@@ -352,7 +352,8 @@ Auth and common libs live in separate repos (reused here).
 
 # DynamoDB
 - aws dynamodb list-tables                                      # list tables
-- aws dynamodb scan --table-name <table>                        # full scan
+- aws dynamodb scan --table-name <tbl>                          # full scan
+- aws dynamodb query --table-name <tbl> --key-condition-expression "<expr>" --expression-attribute-values <json> # query
 
 # RDS
 - aws rds describe-db-instances                                 # list DB instances
