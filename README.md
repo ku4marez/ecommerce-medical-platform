@@ -10,13 +10,14 @@ Auth and common libs live in separate repos (reused here).
 - **Storage:** MinIO (local) / S3-compatible
 
 # Kubernetes basics
-- kubectl config get-contexts                                  # show clusters
-- kubectl cluster-info                                         # show cluster endpoints
-- kubectl get nodes                                            # list nodes
-- kubectl get pods -A                                          # list all pods
-- kubectl get svc -A                                           # list all services
-- kubectl get deploy -A                                        # list all deployments
-- kubectl get ns                                               # list namespaces
+- kubectl config get-contexts                                   # list configured clusters
+- kubectl config use-context <context>                          # switch cluster
+- kubectl get nodes                                             # list cluster nodes
+- kubectl get pods -n <namespace>                               # list pods in namespace
+- kubectl get deployments -n <namespace>                        # list deployments
+- kubectl get services -n <namespace>                           # list services
+- kubectl get all -n <namespace>                                # list all resources
+- kubectl scale deployment <name> --replicas=<n> -n <namespace> # scale deployment
 
 # Delete resources
 - kubectl delete deployment <name> -n <ns>                     # delete deployment
@@ -332,7 +333,7 @@ Auth and common libs live in separate repos (reused here).
 # ECS (Containers)
 - aws ecs list-clusters                                         # list ECS clusters
 - aws ecs list-services --cluster <cluster>                     # list services
-- aws ecs describe-services --cluster <c> --services <s>        # describe service
+- aws ecs describe-services --cluster <cluster> --services <service>        # describe service
 - aws ecs list-tasks --cluster <c> --service-name <s>           # list tasks
 - aws ecs describe-tasks --cluster <c> --tasks <id>             # task details 
 - aws ecs update-service --cluster <c> --service <s> --force-new-deployment # restart service
@@ -411,18 +412,3 @@ Auth and common libs live in separate repos (reused here).
 - aws eks describe-cluster --name <cluster> --region <region>   # cluster details
 - aws eks update-kubeconfig --name <cluster> --region <region> --profile <profile>   # add cluster to kubectl
 - aws eks update-kubeconfig --name <cluster> --region <region> --alias <alias>       # add with custom context name
-- kubectl config get-contexts                                   # list configured clusters
-- kubectl config use-context <context>                          # switch cluster
-- kubectl get nodes                                             # list cluster nodes
-- kubectl get pods -n <namespace>                               # list pods in namespace
-- kubectl get deployments -n <namespace>                        # list deployments
-- kubectl get services -n <namespace>                           # list services
-- kubectl logs deployment/<name> -n <namespace>                 # view deployment logs
-- kubectl logs deployment/<name> -n <namespace> --follow        # tail logs
-- kubectl logs deployment/<name> -n <namespace> --tail=100      # last 100 lines
-- kubectl describe pod <pod-name> -n <namespace>                # pod details
-- kubectl port-forward service/<service> <local>:<remote> -n <namespace>             # forward port
-- kubectl exec -it <pod-name> -n <namespace> -- /bin/bash       # shell into pod
-- kubectl get all -n <namespace>                                # list all resources
-- kubectl delete pod <pod-name> -n <namespace>                  # delete pod (restarts)
-- kubectl scale deployment <name> --replicas=<n> -n <namespace> # scale deployment
