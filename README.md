@@ -353,8 +353,7 @@ Auth and common libs live in separate repos (reused here).
 # DynamoDB
 - aws dynamodb list-tables                                      # list tables
 - aws dynamodb scan --table-name <table>                        # full scan
-- aws dynamodb query --table-name <table> \                     
-    --key-condition-expression "<expr>" --expression-attribute-values <json>  # query with condition
+## - aws dynamodb query --table-name <table> --key-condition-expression "<expr>" --expression-attribute-values <json>  # query with condition
 # RDS
 - aws rds describe-db-instances                                 # list DB instances
 - aws rds describe-db-clusters                                  # list clusters
