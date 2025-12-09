@@ -215,7 +215,7 @@ Auth and common libs live in separate repos (reused here).
 - helm install monitoring prometheus-community/kube-prometheus-stack
 - admin/BpWD5aPs32X1R1Gg04QjvOPmAqFzscfMLXNI2s5d
 
-# WSL install AWS CLI, Helm, kubectl, k3d, Java 21, git
+# WSL install AWS CLI, Helm, kubectl, k3d, Java 21, git, kiro, maven, gradle
 - sudo apt update && sudo apt upgrade -y
 - sudo apt install -y git
 - sudo apt install -y openjdk-21-jdk
@@ -229,6 +229,11 @@ Auth and common libs live in separate repos (reused here).
 - unzip awscliv2.zip
 - sudo ./aws/install
 - rm -rf aws awscliv2.zip
+- curl -fsSL https://cli.kiro.dev/install | bash
+- echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+- source ~/.bashrc
+- sudo apt install -y maven
+- sudo apt install -y gradle (ubuntu package)
 
 ## Gradle
 - ./gradlew build                    # Build project
