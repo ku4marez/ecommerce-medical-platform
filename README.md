@@ -12,6 +12,7 @@ Auth and common libs live in separate repos (reused here).
 # Kubernetes basics
 - kubectl config get-contexts                                   # list configured clusters
 - kubectl config use-context <context>                          # switch cluster
+- kubectl get namespaces                                        # list cluster namespaces
 - kubectl get nodes                                             # list cluster nodes
 - kubectl get pods -n <namespace>                               # list pods in namespace
 - kubectl get deployments -n <namespace>                        # list deployments
@@ -90,6 +91,7 @@ Auth and common libs live in separate repos (reused here).
 - git restore .                             # discard local unstaged edits
 - git reset --hard                          # reset everything to last commit
 - git reset HEAD~1                          # remove last commit (keep files)
+- git reset --hard HEAD@{1}                 # undo the removal on the last commit
 - git stash                                 # stash current changes
 - git stash pop                             # apply & remove stash
 - git branch                                # list branches
